@@ -85,6 +85,16 @@ class OT_DisconnectAllPhysicalBone(Operator):
         return {'FINISHED'}
 
 
+@_add_cls
+class OT_CancelDisconnectAllPhysicalBone(Operator):
+    bl_idname = 'mte.cancel_disconnect_all_physical_bone'
+    bl_label = 'Cancel disconnect all physical bone'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bone_func.cancel_disconnect_all_physical_bone()
+        return {'FINISHED'}
+
 
 # -------------------------------------------------------------------------------
 

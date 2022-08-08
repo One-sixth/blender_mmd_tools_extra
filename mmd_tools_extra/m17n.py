@@ -14,6 +14,7 @@ translation_dict = {
         ('Operator', 'Auto setting and hide tip bone'): '自动设定和隐藏尖端骨骼',
         ('Operator', 'Select rigidbody by selected bone'): '基于已选择的骨骼选中关联的刚体',
         ('Operator', 'Disconnect all physical bone'): '断离所有物理骨骼',
+        ('Operator', 'Cancel disconnect all physical bone'): '取消断离所有物理骨骼',
 
         # bone_func.py
         ('*', 'This function can only be used in Armature Edit Mode.'): '只能在骨架编辑模式使用本功能。',

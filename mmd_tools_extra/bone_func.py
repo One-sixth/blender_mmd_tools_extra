@@ -184,3 +184,24 @@ def disconnect_all_physical_bone():
             bone.use_connect = False
 
     alert_msg('Info', 'Success.')
+
+
+def cancel_disconnect_all_physical_bone():
+    # 取消断离所有物理骨骼
+    # ref issue https://github.com/UuuNyaa/blender_mmd_tools/issues/50
+
+    if bpy.context.mode not in ['EDIT_ARMATURE']:
+        alert_msg('Error', 'This function can only be used in Armature Edit Mode.')
+        return
+    
+    arm_obj = bpy.context.active_object
+    if arm_obj is None or arm_obj.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
+        return
+
+    for bone in arm_obj.data.edit_bones:
+        if 'mmd_bone_use_connect' in bone.keys():
+            bone.use_connect = bool(bone['mmd_bone_use_connect'])
+            del bone['mmd_bone_use_connect']
+
+    alert_msg('Info', 'Success.')
