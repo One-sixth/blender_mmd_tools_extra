@@ -1,57 +1,8 @@
+from math import inf
 import bpy
 import time
 from .misc import alert_msg, filter_mmd_joint, filter_mmd_rigidbody
 from .simple_progressbar import update_progress, finish_progress
-
-
-# def seg_bake_func(
-#     seg_frame=100,
-#     frame_start=1,
-#     frame_end=250,
-#     step=1,
-#     only_selected=True,
-#     visual_keying=False,
-#     clear_constraints=False,
-#     clear_parents=False,
-#     use_current_action=False,
-#     clean_curves=False,
-#     bake_types={'POSE'}
-#     ):
-
-#     print('开始分段烘焙')
-
-#     for loc_start in range(frame_start, frame_end+1, seg_frame):
-#         loc_end = min(loc_start+seg_frame, frame_end+1)
-#         start_time = time.time()
-#         bpy.ops.nla.bake(
-#             frame_start=loc_start,
-#             frame_end=loc_end,
-#             step=step,
-#             only_selected=only_selected,
-#             visual_keying=visual_keying,
-#             clear_constraints=clear_constraints,
-#             clear_parents=clear_parents,
-#             use_current_action=use_current_action,
-#             clean_curves=clean_curves,
-#             bake_types=bake_types
-#             )
-#         end_time = time.time()
-#         print(f'Baked {loc_start} -> {loc_end} ; cost time: {end_time-start_time:.2f}')
-#     alert_msg('信息', '操作完成')
-
-
-# def my_bake(
-#     frame_start=1,
-#     frame_end=250
-#     ):
-#     start_time = time.time()
-#     for f in range(frame_start, frame_end):
-#         print(f)
-#         bpy.context.scene.frame_current = f
-#         bpy.ops.anim.keyframe_insert_by_name(type="BUILTIN_KSI_VisualLocRotScale")
-#     end_time = time.time()
-#     print(f'{end_time-start_time:.2f}')
-
 
 
 def disable_constraints(obj):
@@ -104,7 +55,76 @@ def get_or_create_fcurve(action, bone_name, channel_i, axis_i, data_path):
     return fc
 
 
-def fast_bake_action(action_name='', frame_start=1, frame_end=250, frame_step=1, use_no_scale=False, use_exist=False, use_disable_constraints=False, use_clean=True, use_active=True):
+def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
+    # 本步中，关键帧必须是按时间顺序排列的，否则可能会发生意外
+    # modify from Blender/3.2/scripts/modules/bpy_extras/anim_utils.py
+
+    # clean_orig_data = {fcu: {p.co[1] for p in fcu.keyframe_points} for fcu in action.fcurves}
+
+    if max_clean_cycle <= 0:
+        max_clean_cycle = inf
+
+    for fcu_i, fcu in enumerate(all_bone_fcurves):
+        update_progress(f'Cleaning bone curves.', (fcu_i+1)/len(all_bone_fcurves))
+        
+        # 自动排序关键帧，确保关键帧按时间顺序排列，这在clean时非常重要
+        fcu.update()
+
+        # fcu_orig_data = clean_orig_data.get(fcu, set())
+
+        # 加入循环清理
+        need_next_clean_cycle = True
+        cur_clean_cycle = 0
+        # 成功清理计数
+        del_count = 0
+
+        while need_next_clean_cycle and cur_clean_cycle < max_clean_cycle:
+            cur_clean_cycle += 1
+            need_next_clean_cycle = False
+
+            keyframe_points = fcu.keyframe_points
+            i = 1
+
+            while i < len(keyframe_points) - 1:
+                val = keyframe_points[i].co[1]
+                frame = keyframe_points[i].co[0]
+
+                # if keyframe_points[i].co[0] < keyframe_points[i-1].co[0]:
+                #     print('Bad! unsorted !')
+
+                # if val in fcu_orig_data:
+                #     i += 1
+                #     continue
+
+                val_prev = keyframe_points[i - 1].co[1]
+                val_next = keyframe_points[i + 1].co[1]
+                
+                # 新增判断，线性模式下特别处理
+                frame_prev = keyframe_points[i - 1].co[0]
+                frame_next = keyframe_points[i + 1].co[0]
+
+                interp = (frame - frame_prev) / (frame_next - frame_prev)
+                val_interp = (val_next - val_prev) * interp
+
+                is_linear = keyframe_points[i].interpolation == 'LINEAR' and keyframe_points[i + 1].interpolation == 'LINEAR'
+
+                if abs(val - val_prev) + abs(val - val_next) < eps or\
+                    (is_linear and abs(val - val_interp) < eps):
+                    need_next_clean_cycle = True
+                    keyframe_points.remove(keyframe_points[i])
+                    del_count += 1
+
+                else:
+                    i += 1
+    
+    print(f'Cleaning bone curves finish. Del {del_count} Frame.')
+
+
+def fast_bake_action(
+    action_name='', frame_start=1, frame_end=250, frame_step=1,
+    use_no_scale=False, use_exist=False, use_disable_constraints=False,
+    clean_eps=1e-4, max_clean_cycle=0, use_clean=True,
+    use_active=True):
     '''
     快速烘焙
     原理，在action轨道中插入关键帧时，已有的关键帧越多，插入就会变得越来越慢
@@ -121,17 +141,20 @@ def fast_bake_action(action_name='', frame_start=1, frame_end=250, frame_step=1,
     :param use_active                   是否激活新序列
     '''
     if bpy.context.mode not in ['POSE']:
-        alert_msg('错误', '只能在姿态模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Pose Mode.')
         return
+
+    # frame_end 也需要包括进来
+    frame_end += 1
 
     scene = bpy.context.scene
 
     arm_obj = bpy.context.active_object
-    if arm_obj.type != 'ARMATURE':
-        alert_msg('错误', '没有找到激活的骨架对象。')
+    if arm_obj is None or arm_obj.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
         return
 
-    print('开始快速烘焙')
+    print('Start fast baking.')
     start_time = time.time()
 
     pose_bones = bpy.context.selected_pose_bones
@@ -144,9 +167,8 @@ def fast_bake_action(action_name='', frame_start=1, frame_end=250, frame_step=1,
     # 骨骼的关键帧
     bone_kps = {}
 
-    print('正在生成可视变换矩阵')
     for frame_cur in range(frame_start, frame_end, frame_step):
-        update_progress(f'Generating visual transform. {frame_cur-frame_start}/{frame_end-frame_start}', (frame_cur-frame_start) / (frame_end-frame_start))
+        update_progress(f'Generating visual transform. {frame_cur-frame_start+1}/{frame_end-frame_start}', (frame_cur-frame_start+1) / (frame_end-frame_start))
 
         # 设定场景帧时，绝对不能使用 scene.frame_cur = xxx
         # 因为它在script代码里面时，不会刷新场景的对象的状态，导致全部对象的姿态全都是错误的（过时的）！
@@ -195,12 +217,9 @@ def fast_bake_action(action_name='', frame_start=1, frame_end=250, frame_step=1,
         # 当主动设置name时，则会反过来自动把已存在名字的动作那个进行规避改名，从而保证当前新建的动作名字一定是指定的名字
         action.name = action_name
 
-    print('正在生成动画序列')
-
     all_bone_fcurves = []
-
     for bone_i, n in enumerate(bone_names):
-        update_progress(f'Generating bone curves. {n}', bone_i/len(bone_names))
+        update_progress(f'Generating bone curves. {n}', (bone_i+1)/len(bone_names))
         
         if use_no_scale:
             fcurves = [None] * 7    # tx, ty, tz, qw, qx, qy, qz
@@ -257,35 +276,42 @@ def fast_bake_action(action_name='', frame_start=1, frame_end=250, frame_step=1,
         arm_obj.animation_data.action = action
     
     if use_clean:
-        # 本步中，关键帧必须是按时间顺序排列的，否则可能会发生意外
-        print('正在清理冗余帧')
-        # modify from Blender/3.2/scripts/modules/bpy_extras/anim_utils.py
-        # clean_orig_data = {fcu: {p.co[1] for p in fcu.keyframe_points} for fcu in action.fcurves}
-
-        for fcu in all_bone_fcurves:
-            # fcu_orig_data = clean_orig_data.get(fcu, set())
-
-            keyframe_points = fcu.keyframe_points
-            i = 1
-            while i < len(keyframe_points) - 1:
-                val = keyframe_points[i].co[1]
-
-                # if keyframe_points[i].co[0] < keyframe_points[i-1].co[0]:
-                #     print('Bad! unsorted !')
-
-                # if val in fcu_orig_data:
-                #     i += 1
-                #     continue
-
-                val_prev = keyframe_points[i - 1].co[1]
-                val_next = keyframe_points[i + 1].co[1]
-
-                if abs(val - val_prev) + abs(val - val_next) < 0.0001:
-                    keyframe_points.remove(keyframe_points[i])
-                else:
-                    i += 1
+        clean_fcurve(all_bone_fcurves, clean_eps, max_clean_cycle)
     
     end_time = time.time()
     print(f'Cost time {end_time-start_time:.3f}')
 
-    alert_msg('Info', 'Success')
+    alert_msg('Info', 'Success.')
+
+
+def clean_action(clean_eps=1e-4, max_clean_cycle=0):
+
+    if bpy.context.mode not in ['POSE']:
+        alert_msg('Error', 'This function can only be used in Pose Mode.')
+        return
+
+    arm_obj = bpy.context.active_object
+    if arm_obj.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
+        return
+
+    pose_bones = bpy.context.selected_pose_bones
+    bone_names = [b.name for b in pose_bones]
+
+    if len(bone_names) == 0:
+        alert_msg('Error', 'Please select at least one bone.')
+        return
+
+    action = arm_obj.animation_data.action
+    if action is None:
+        alert_msg('Error', 'No found any active action on actived armature.')
+        return
+
+    channels = []
+    for group in action.groups:
+        if group.name in bone_names:
+            for channel in group.channels:
+                channels.append(channel)
+    
+    clean_fcurve(channels, clean_eps, max_clean_cycle)
+    alert_msg('Info', 'Success.')

@@ -18,7 +18,7 @@ class MTE_Bone_Panel(bpy.types.Panel):
     bl_context = ''
     bl_idname = 'MTE_PT_Bone_Panel'
     # 菜单名字
-    bl_label = 'Bone Tool'
+    bl_label = 'Bone Panel'
 
     def draw(self, context):
         scene = context.scene

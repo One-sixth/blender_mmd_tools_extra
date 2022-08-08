@@ -4,7 +4,7 @@ from .misc import alert_msg, filter_mmd_joint, filter_mmd_rigidbody
 
 def select_all_invalid_joint():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
     
     obj_list = []
@@ -18,12 +18,12 @@ def select_all_invalid_joint():
     for obj in obj_list:
         obj.select_set(True)
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
-def rename_selected_joint():
+def auto_rename_selected_joint():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     # rb1->rb2->joint
@@ -73,18 +73,18 @@ def rename_selected_joint():
                 
                 idx += 1
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def select_rigidbody_by_selected_joint():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     joints = filter_mmd_joint(bpy.context.selected_objects)
 
     if len(joints) == 0:
-        alert_msg('错误', '请至少选中一个MMD Joint。')
+        alert_msg('Error', 'Please select at least one MMD joint.')
         return
 
     rigidbodies = []
@@ -102,4 +102,4 @@ def select_rigidbody_by_selected_joint():
         rb.hide_set(False)
         rb.select_set(True)
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')

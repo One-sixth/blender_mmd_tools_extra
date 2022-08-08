@@ -5,7 +5,7 @@ from mmd_tools.core.model import FnModel
 
 def select_all_non_bone_ref_rigidbody(delete=False):
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     obj_list = []
@@ -30,12 +30,12 @@ def select_all_non_bone_ref_rigidbody(delete=False):
         print('select', obj.name)
         obj.select_set(True)
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
-def rename_selected_rigidbody():
+def auto_rename_selected_rigidbody():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     bonename_rigidbodies = {}
@@ -72,12 +72,12 @@ def rename_selected_rigidbody():
             
             idx += 1
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def select_joint_by_selected_rigidbody():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     rigidbodies = filter_mmd_rigidbody(bpy.context.selected_objects)
@@ -95,28 +95,28 @@ def select_joint_by_selected_rigidbody():
         j.hide_set(False)
         j.select_set(True)
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def select_bone_by_selected_rigidbody():
     if bpy.context.mode != 'OBJECT':
-        alert_msg('错误', '只能在物体模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Object Mode.')
         return
 
     rigidbodies = filter_mmd_rigidbody(bpy.context.selected_objects)
 
     if len(rigidbodies) == 0:
-        alert_msg('错误', '请至少选中一个MMD刚体。')
+        alert_msg('Error', 'Please select at least one MMD rigidbody.')
         return
 
     mmd_root_obj = FnModel.find_root(rigidbodies[0])
     if mmd_root_obj is None:
-        alert_msg('错误', 'MMD刚体关联的MMD根对象不存在。')
+        alert_msg('Error', 'The MMD root object associated with the MMD rigidbody does not exist.')
         return
 
     arm_obj = FnModel.find_armature(mmd_root_obj)
     if arm_obj is None:
-        alert_msg('错误', 'MMD刚体关联的MMD骨架对象不存在。')
+        alert_msg('Error', 'The MMD armature object associated with the MMD rigidbody does not exist.')
         return
 
     bone_names = []
@@ -141,4 +141,4 @@ def select_bone_by_selected_rigidbody():
             bone.select_head = False
             bone.select_tail = False
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')

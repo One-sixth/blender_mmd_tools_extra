@@ -2,7 +2,7 @@ bl_info = {
     "name": "mmd_tool_extra",           #插件名字
     "author": "onesixth",               #作者名字
     "version": (0, 0, 1),               #插件版本
-    "blender": (3, 2, 0),               #需要的*最低* blender 版本
+    "blender": (3, 0, 0),               #需要的*最低* blender 版本
     "location": "3DView > Tools",       #插件所在位置
     "description": "用于mmd_tool扩展",  #描述
     "support": 'COMMUNITY',             #支持等级（社区支持）

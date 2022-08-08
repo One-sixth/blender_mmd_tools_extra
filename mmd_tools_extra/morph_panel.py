@@ -11,14 +11,6 @@ _add_cls = _add_cls_ref(class_list)
 
 
 @_add_cls
-class MTE_Morph_Prop(PropertyGroup):
-
-    old_related_mesh_patten:                StringProperty(default='*', description='')
-    new_related_mesh:                       StringProperty(default='', description='')
-    # -------------------------------------------------------------------------------------
-
-
-@_add_cls
 class MTE_Morph_Panel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -26,34 +18,31 @@ class MTE_Morph_Panel(bpy.types.Panel):
     bl_context = ''
     bl_idname = 'MTE_PT_Morph_Panel'
     # 菜单名字
-    bl_label = 'Morph Tool'
+    bl_label = 'Morph Panel'
 
     def draw(self, context):
-        scene = context.scene
-        prop = scene.mte_morph_prop
-
         layout = self.layout
-        grid = layout.column(align=True)
-        grid.prop(prop, 'old_related_mesh_patten', text='old_patten')
-        grid.prop_search(prop, 'new_related_mesh', bpy.data, 'meshes', text='new_mesh')
-        layout.operator(OT_ReplaceMaterialMorphRelatedMesh.bl_idname)
+        layout.operator(ReplaceMaterialMorphRelatedMeshDialogOperator.bl_idname)
 
 
 @_add_cls
-class OT_ReplaceMaterialMorphRelatedMesh(Operator):
-    bl_idname = 'mte.replace_material_morph_related_mesh'
-    bl_label = 'Replace Material Morph Related Mesh'
-    bl_options = {'REGISTER', 'UNDO'}
+class ReplaceMaterialMorphRelatedMeshDialogOperator(Operator):
+    bl_idname = "object.replace_material_morph_related_mesh_dialog"
+    bl_label = "Replace Material Morph Related Mesh Dialog"
+
+    old_related_mesh_patten:                StringProperty(name='old mesh name patten', default='*', description='')
+    new_related_mesh:                       StringProperty(name='new mesh name', default='', description='')
 
     def execute(self, context):
-        scene = context.scene
-        prop = scene.mte_morph_prop
-
         morph_func.replace_material_morph_related_mesh(
-            prop.old_related_mesh_patten,
-            prop.new_related_mesh,
+            self.old_related_mesh_patten,
+            self.new_related_mesh,
         )
         return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
 
 
 # -------------------------------------------------------------------------------
@@ -62,7 +51,6 @@ class OT_ReplaceMaterialMorphRelatedMesh(Operator):
 def register():
     for cls in class_list:
         bpy.utils.register_class(cls)
-    Scene.mte_morph_prop = PointerProperty(type=MTE_Morph_Prop)
 
 def unregister():
     for cls in class_list:

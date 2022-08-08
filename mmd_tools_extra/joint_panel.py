@@ -18,13 +18,13 @@ class MTE_Joint_Panel(bpy.types.Panel):
     bl_context = ''
     bl_idname = 'MTE_PT_Joint_Panel'
     # 菜单名字
-    bl_label = 'Joint Tool'
+    bl_label = 'Joint Panel'
 
     def draw(self, context):
         scene = context.scene
         layout = self.layout
         layout.operator(OT_SelectAllInvalidJoint.bl_idname)
-        layout.operator(OT_RenameSelectedJoint.bl_idname)
+        layout.operator(OT_AutoRenameSelectedJoint.bl_idname)
         layout.operator(OT_SelectRigidbodyBySelectedJoint.bl_idname)
 
 
@@ -40,13 +40,13 @@ class OT_SelectAllInvalidJoint(Operator):
 
 
 @_add_cls
-class OT_RenameSelectedJoint(Operator):
-    bl_idname = 'mte.rename_selected_joint'
-    bl_label = 'Rename selected joint'
+class OT_AutoRenameSelectedJoint(Operator):
+    bl_idname = 'mte.auto_rename_selected_joint'
+    bl_label = 'Auto Rename selected joint'
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        joint_func.rename_selected_joint()
+        joint_func.auto_rename_selected_joint()
         return {'FINISHED'}
 
 

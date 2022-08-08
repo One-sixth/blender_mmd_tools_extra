@@ -266,7 +266,7 @@ class MTE_Material_Panel(Panel):
         
         row = grid.row(align=True)
         row.prop(prop, 'use_alpha_threshold', text='', icon=get_hide_icon(prop.use_alpha_threshold))
-        row.prop(prop, 'new_alpha_threshold', text='alpha method', slider=True)
+        row.prop(prop, 'new_alpha_threshold', text='alpha threshold', slider=True)
         
         row = grid.row(align=True)
         row.prop(prop, 'use_screen_refraction', text='', icon=get_hide_icon(prop.use_screen_refraction))

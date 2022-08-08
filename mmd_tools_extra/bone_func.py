@@ -5,33 +5,33 @@ from mmd_tools.core.model import FnModel
 
 def clear_selected_bone_roll():
     if bpy.context.mode != 'EDIT_ARMATURE':
-        alert_msg('错误', '只能在骨架编辑模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Armature Edit Mode.')
         return
 
     bone_count = 0
-
     for b in bpy.context.selected_editable_bones:
         b.roll = 0
         print(f'{b.name}')
         bone_count += 1
 
-    alert_msg('信息', f'成功清除{bone_count}个骨骼翻转角度。')
+    print(f'Clear {bone_count} bone roll.')
+    alert_msg('Info', 'Success.')
 
 
 def symmetric_selected_bones_x():
     if bpy.context.mode != 'EDIT_ARMATURE':
-        alert_msg('错误', '只能在骨架编辑模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Armature Edit Mode.')
         return
     
     if bpy.context.active_object is None or bpy.context.active_object.type != 'ARMATURE':
-        alert_msg('错误', '需要令骨架对象为激活对象。')
+        alert_msg('Error', 'The actived object should be a valid armature object.')
         return
     
     arm_obj = bpy.context.active_object
     arm = arm_obj.data
 
     if bpy.context.selected_editable_bones:
-        alert_msg('错误', '需要令骨架对象为激活对象。')
+        alert_msg('Error', 'Please select at least one bone.')
     
     # 对齐时，需要关闭镜像功能
     last_use_mirror_x = arm.use_mirror_x
@@ -72,24 +72,24 @@ def symmetric_selected_bones_x():
     arm.use_mirror_x = last_use_mirror_x
 
     if warning_found_target_bone_in_selected_bone:
-        alert_msg('警告', '操作完成。但发现目标骨骼在选中的骨骼中，这可能产生意外的结果。')
+        alert_msg('Warning', 'Success. But the target bone is found to be among the selected bones, which may have unexpected results.')
     else:
-        alert_msg('信息', '操作完成。')
+        alert_msg('Info', 'Success.')
 
 
 def auto_setting_and_hide_tip_bone():
     if bpy.context.mode != 'POSE':
-        alert_msg('错误', '只能在姿态模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Pose Mode.')
         return
     
     if bpy.context.active_object is None or bpy.context.active_object.type != 'ARMATURE':
-        alert_msg('错误', '需要令骨架对象为激活对象。')
+        alert_msg('Error', 'The actived object should be a valid armature object.')
         return
 
     bones = bpy.context.selected_pose_bones
 
     if len(bones) == 0:
-        alert_msg('错误', '请至少选中一个骨骼。')
+        alert_msg('Error', 'Please select at least one bone.')
         return
 
     for bone in bones:
@@ -113,17 +113,17 @@ def auto_setting_and_hide_tip_bone():
                 # print(f'setting {mbone.name_j} hide to True')
                 bone.bone.hide = True
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def select_rigidbody_by_selected_bone():
     if bpy.context.mode not in ['EDIT_ARMATURE', 'POSE']:
-        alert_msg('错误', '只能在姿态模式或骨架编辑模式使用本功能。')
+        alert_msg('Error', 'This function can only be used in Pose Mode and Armature Edit Mode.')
         return
     
     arm_obj = bpy.context.active_object
-    if arm_obj.type != 'ARMATURE':
-        alert_msg('错误', '没有找到激活的骨架对象。')
+    if arm_obj is None or arm_obj.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
         return
 
     bone_names = []
@@ -134,19 +134,12 @@ def select_rigidbody_by_selected_bone():
 
     mmd_root_obj = FnModel.find_root(arm_obj)
     if mmd_root_obj is None:
-        alert_msg('错误', '只能用于MMD模型的骨架')
+        alert_msg('Error', 'This function can only be used for armature of MMD model.')
         return
-    
-    # 否决的代码
-    # rigidbody_group = FnModel.find_rigid_group(mmd_root_obj)
-    # if rigidbody_group is None:
-    #     alert_msg('错误', '没有找到刚体组')
-    #     return
-    # rigidbodies = filter_mmd_rigidbody(rigidbody_group.children_recursive)
-    
+
     # 因为找到的刚体数量不完整，所以直接从root_obj开始检索
     rigidbodies = filter_mmd_rigidbody(mmd_root_obj.children_recursive)
-    
+
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
 
@@ -155,4 +148,39 @@ def select_rigidbody_by_selected_bone():
             rb.hide_set(False)
             rb.select_set(True)
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
+
+
+def disconnect_all_physical_bones():
+    # 断离所有物理骨骼，不影响模型导出
+    # ref issue https://github.com/UuuNyaa/blender_mmd_tools/issues/50
+
+    if bpy.context.mode not in ['EDIT_ARMATURE']:
+        alert_msg('Error', 'This function can only be used in Armature Edit Mode.')
+        return
+    
+    arm_obj = bpy.context.active_object
+    if arm_obj is None or arm_obj.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
+        return
+
+    mmd_root_obj = FnModel.find_root(arm_obj)
+    if mmd_root_obj is None:
+        alert_msg('Error', 'This function can only be used for armature of MMD model.')
+        return
+
+    rigidbodies = filter_mmd_rigidbody(mmd_root_obj.children_recursive)
+    
+    bone_names = []
+
+    for rb in rigidbodies:
+        if rb.mmd_rigid.type == '1':
+            if rb.mmd_rigid.bone != '':
+                bone_names.append(rb.mmd_rigid.bone)
+
+    for bone in arm_obj.data.edit_bones:
+        if bone.name in bone_names:
+            bone['mmd_bone_use_connect'] = 1
+            bone.use_connect = False
+
+    alert_msg('Info', 'Success.')

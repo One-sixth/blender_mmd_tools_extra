@@ -18,13 +18,13 @@ class MTE_Rigidbody_Panel(bpy.types.Panel):
     bl_context = ''
     bl_idname = 'MTE_PT_Rigidbody_Panel'
     # 菜单名字
-    bl_label = 'Rigidbody Tool'
+    bl_label = 'Rigidbody Panel'
 
     def draw(self, context):
         scene = context.scene
         layout = self.layout
         layout.operator(OT_SelectAllNonBoneRefRigidbody.bl_idname)
-        layout.operator(OT_RenameSelectedRigidbody.bl_idname)
+        layout.operator(OT_AutoRenameSelectedRigidbody.bl_idname)
         layout.operator(OT_SelectJointBySelectedRigidbody.bl_idname)
         layout.operator(OT_SelectBoneBySelectedRigidbody.bl_idname)
 
@@ -41,13 +41,13 @@ class OT_SelectAllNonBoneRefRigidbody(Operator):
 
 
 @_add_cls
-class OT_RenameSelectedRigidbody(Operator):
-    bl_idname = 'mte.rename_selected_rigidbody'
-    bl_label = 'Rename selected rigidbody'
+class OT_AutoRenameSelectedRigidbody(Operator):
+    bl_idname = 'mte.auto_rename_selected_rigidbody'
+    bl_label = 'Auto rename selected rigidbody'
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        rigidbody_func.rename_selected_rigidbody()
+        rigidbody_func.auto_rename_selected_rigidbody()
         return {'FINISHED'}
 
 

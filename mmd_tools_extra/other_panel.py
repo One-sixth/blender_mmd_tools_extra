@@ -18,7 +18,7 @@ class MTE_Other_Panel(bpy.types.Panel):
     bl_context = ''
     bl_idname = 'MTE_PT_Other_Panel'
     # 菜单名字
-    bl_label = 'Other Tool'
+    bl_label = 'Other Panel'
 
     def draw(self, context):
         scene = context.scene

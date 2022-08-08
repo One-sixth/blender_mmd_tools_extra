@@ -6,7 +6,7 @@ from .misc import alert_msg
 def replace_material_morph_related_mesh(old_related_mesh_patten, new_related_mesh):
     obj = bpy.context.active_object
     if obj is None or obj.mmd_type != 'ROOT':
-        alert_msg('错误', '需要令mmd_root对象为激活对象。')
+        alert_msg('Error', 'The actived object should be a valid mmd root object.')
         return
 
     root_obj = obj
@@ -15,4 +15,4 @@ def replace_material_morph_related_mesh(old_related_mesh_patten, new_related_mes
             if fnmatch.fnmatch(data.related_mesh, old_related_mesh_patten):
                 data.related_mesh = new_related_mesh
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')

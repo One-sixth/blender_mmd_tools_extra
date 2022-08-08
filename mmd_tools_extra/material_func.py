@@ -9,7 +9,7 @@ def batch_setting_mmd_material_prop(mte_material_prop):
     mesh_objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
 
     if len(mesh_objs) == 0:
-        alert_msg('信息', '请选中至少一个网格对象')
+        alert_msg('Info', 'Please select at least one mesh object.')
         return
 
     prop = mte_material_prop
@@ -31,7 +31,7 @@ def batch_setting_mmd_material_prop(mte_material_prop):
                     mats.append(mat)
     
     if len(mesh_objs) == 0:
-        alert_msg('信息', '在选择的网格对象中没有发现任何MMD材质')
+        alert_msg('Info', 'No MMD materials were found in the selected mesh object.')
         return
 
     for mat in mats:
@@ -160,14 +160,15 @@ def batch_setting_mmd_material_prop(mte_material_prop):
     
         # -------------------------------------------------------------------------------------
 
-    alert_msg('信息', f'更新了{len(mats)}个材质')
+    print(f'Updated {len(mats)} materials.')
+    alert_msg('Info', 'Success.')
     
 
 def remove_all_redundant_mmd_shader_group():
     mesh_objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
 
     if len(mesh_objs) == 0:
-        alert_msg('信息', '请选中至少一个网格对象')
+        alert_msg('Info', 'Please select at least one mesh object.')
         return
 
     mats = []
@@ -182,7 +183,7 @@ def remove_all_redundant_mmd_shader_group():
                 mats.append(mat)
     
     if len(mesh_objs) == 0:
-        alert_msg('信息', '在选择的网格对象中没有发现任何MMD材质')
+        alert_msg('Info', 'No MMD materials were found in the selected mesh object.')
         return
     
     def replace_node_group(node_group_name, node_name):
@@ -196,7 +197,7 @@ def remove_all_redundant_mmd_shader_group():
                     break
         
         if mmd_shader_group is None:
-            alert_msg('信息', f'没有发现任何{node_group_name}节点组')
+            print('No shader_node groups found with name {node_group_name}')
             return
         
         for mat in mats:
@@ -208,4 +209,4 @@ def remove_all_redundant_mmd_shader_group():
     replace_node_group('MMDShaderDev', 'mmd_shader')
     replace_node_group('MMDTexUV', 'mmd_tex_uv')
     
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')

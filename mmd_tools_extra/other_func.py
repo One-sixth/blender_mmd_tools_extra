@@ -1,4 +1,3 @@
-import importlib
 import bpy
 from .misc import alert_msg
 
@@ -14,7 +13,7 @@ def delete_all_vrm_obj():
         print('Del', obj.name)
         bpy.data.objects.remove(obj)
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def delete_all_invalid_driver():
@@ -31,7 +30,7 @@ def delete_all_invalid_driver():
                     print(f'Del {dr.data_path}')
                     obj.data.driver_remove(dr.data_path, -1)
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
 
 
 def delete_all_ghost_object():
@@ -45,4 +44,4 @@ def delete_all_ghost_object():
             print(f'Del {obj.name}')
             bpy.data.objects.remove(obj)
 
-    alert_msg('信息', '操作完成')
+    alert_msg('Info', 'Success.')
