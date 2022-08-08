@@ -142,3 +142,38 @@ def select_bone_by_selected_rigidbody():
             bone.select_tail = False
     
     alert_msg('Info', 'Success.')
+
+
+
+def select_rigidbody_by_physics_type_dialog(kinematics, rot_physics, physics):
+    if bpy.context.mode != 'OBJECT':
+        alert_msg('Error', 'This function can only be used in Object Mode.')
+        return
+
+    mmd_root_obj = FnModel.find_root(bpy.context.active_object)
+    if mmd_root_obj is None:
+        alert_msg('Error', 'The MMD root object associated with the MMD rigidbody does not exist.')
+        return
+
+    rigidbodies = filter_mmd_rigidbody(mmd_root_obj.children_recursive)
+
+    if len(rigidbodies) == 0:
+        alert_msg('Info', 'The active MMD model does not have any rigid bodies.')
+        return
+
+    arm_obj = FnModel.find_armature(mmd_root_obj)
+    if arm_obj is None:
+        alert_msg('Error', 'The MMD armature object associated with the MMD rigidbody does not exist.')
+        return
+
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    
+    for rb in rigidbodies:
+        if (kinematics and rb.mmd_rigid.type == '0') or\
+            (rot_physics and rb.mmd_rigid.type == '2') or\
+            (physics and rb.mmd_rigid.type == '1'):
+            rb.hide_set(False)
+            rb.select_set(True)
+    
+    alert_msg('Info', 'Success.')

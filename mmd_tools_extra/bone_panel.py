@@ -27,6 +27,7 @@ class MTE_Bone_Panel(bpy.types.Panel):
         layout.operator(OT_SymmetricSelectedBonesX.bl_idname)
         layout.operator(OT_AutoSettingAndHideTipBone.bl_idname)
         layout.operator(OT_SelectRigidbodyBySelectedBone.bl_idname)
+        layout.operator(OT_DisconnectAllPhysicalBone.bl_idname)
 
 
 @_add_cls
@@ -70,6 +71,17 @@ class OT_SelectRigidbodyBySelectedBone(Operator):
 
     def execute(self, context):
         bone_func.select_rigidbody_by_selected_bone()
+        return {'FINISHED'}
+
+
+@_add_cls
+class OT_DisconnectAllPhysicalBone(Operator):
+    bl_idname = 'mte.disconnect_all_physical_bone'
+    bl_label = 'Disconnect all physical bone'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bone_func.disconnect_all_physical_bone()
         return {'FINISHED'}
 
 

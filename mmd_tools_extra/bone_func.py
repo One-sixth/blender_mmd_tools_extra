@@ -151,7 +151,7 @@ def select_rigidbody_by_selected_bone():
     alert_msg('Info', 'Success.')
 
 
-def disconnect_all_physical_bones():
+def disconnect_all_physical_bone():
     # 断离所有物理骨骼，不影响模型导出
     # ref issue https://github.com/UuuNyaa/blender_mmd_tools/issues/50
 

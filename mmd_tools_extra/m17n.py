@@ -13,6 +13,7 @@ translation_dict = {
         ('Operator', 'Symmetric selected bones X'): 'X轴镜像选中骨骼的设置',
         ('Operator', 'Auto setting and hide tip bone'): '自动设定和隐藏尖端骨骼',
         ('Operator', 'Select rigidbody by selected bone'): '基于已选择的骨骼选中关联的刚体',
+        ('Operator', 'Disconnect all physical bone'): '断离所有物理骨骼',
 
         # bone_func.py
         ('*', 'This function can only be used in Armature Edit Mode.'): '只能在骨架编辑模式使用本功能。',
@@ -119,6 +120,10 @@ translation_dict = {
         ('Operator', 'Auto rename selected rigidbody'): '自动重命名选择的刚体',
         ('Operator', 'Select joint by selected rigidbody'): '基于已选择的刚体选择关联的约束点(J点)',
         ('Operator', 'Select bone by selected rigidbody'): '基于已选择的刚体选择关联的骨骼',
+        ('*', 'Kinematics'): '骨骼跟踪',
+        ('*', 'Rot physics'): '骨骼位置跟踪',
+        ('*', 'Physics'): '物理',
+        ('Operator', 'Select Rigidbody By Physics Type Dialog'): '通过物理类型选择刚体',
 
 
         # rigidbody_func.py
@@ -126,6 +131,7 @@ translation_dict = {
         ('*', 'Please select at least one MMD rigidbody.'): '请至少选中一个MMD刚体。',
         ('*', 'The MMD root object associated with the MMD rigidbody does not exist.'): 'MMD刚体关联的MMD根对象不存在。',
         ('*', 'The MMD armature object associated with the MMD rigidbody does not exist.'): 'MMD刚体关联的MMD骨架对象不存在。',
+        ('*', 'The active MMD model does not have any rigid bodies.'): '目标MMD模型没有任何刚体。',
         
 
         # joint_panel.py

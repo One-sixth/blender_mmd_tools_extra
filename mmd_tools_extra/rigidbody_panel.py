@@ -27,6 +27,7 @@ class MTE_Rigidbody_Panel(bpy.types.Panel):
         layout.operator(OT_AutoRenameSelectedRigidbody.bl_idname)
         layout.operator(OT_SelectJointBySelectedRigidbody.bl_idname)
         layout.operator(OT_SelectBoneBySelectedRigidbody.bl_idname)
+        layout.operator(OT_SelectRigidbodyByPhysicsTypeDialogOperator.bl_idname)
 
 
 @_add_cls
@@ -71,6 +72,24 @@ class OT_SelectBoneBySelectedRigidbody(Operator):
     def execute(self, context):
         rigidbody_func.select_bone_by_selected_rigidbody()
         return {'FINISHED'}
+
+
+@_add_cls
+class OT_SelectRigidbodyByPhysicsTypeDialogOperator(Operator):
+    bl_idname = 'object.select_rigidbody_by_physics_type_dialog'
+    bl_label = 'Select Rigidbody By Physics Type Dialog'
+
+    kinematics:     BoolProperty(name="Kinematics", default=True)
+    rot_physics:    BoolProperty(name="Rot physics", default=True)
+    physics:        BoolProperty(name="Physics", default=True)
+
+    def execute(self, context):
+        rigidbody_func.select_rigidbody_by_physics_type_dialog(self.kinematics, self.rot_physics, self.physics)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
 
 
 # -------------------------------------------------------------------------------
