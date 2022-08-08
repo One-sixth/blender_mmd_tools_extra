@@ -9,10 +9,10 @@ translation_dict = {
 
         # bone_panel.py
         ('*', 'Bone Panel'): '骨骼面板',
-        ('*', 'Clear selected bone roll'): '清除选择骨骼滚动角度',
-        ('*', 'Symmetric selected bones X'): 'X轴镜像选中骨骼的设置',
-        ('*', 'Auto setting and hide tip bone'): '自动设定和隐藏尖端骨骼',
-        ('*', 'Select rigidbody by selected bone'): '基于已选择的骨骼选中关联的刚体',
+        ('Operator', 'Clear selected bone roll'): '清除选择骨骼滚动角度',
+        ('Operator', 'Symmetric selected bones X'): 'X轴镜像选中骨骼的设置',
+        ('Operator', 'Auto setting and hide tip bone'): '自动设定和隐藏尖端骨骼',
+        ('Operator', 'Select rigidbody by selected bone'): '基于已选择的骨骼选中关联的刚体',
 
         # bone_func.py
         ('*', 'This function can only be used in Armature Edit Mode.'): '只能在骨架编辑模式使用本功能。',
@@ -70,10 +70,10 @@ translation_dict = {
 
         ('*', 'Material Panel'): '材质面板',
         ('*', 'Batch alter material props.'): '批量修改材质属性',
-        ('*', 'Batch updat'): '批量修改',
+        ('Operator', 'Batch update'): '批量修改',
 
         ('*', 'Material Panel L2'): '材质面板2',
-        ('*', 'Remove all redundant mmd shader group'): '删除所有冗余的MMDShader组',
+        ('Operator', 'Remove all redundant mmd shader group'): '删除所有冗余的MMDShader组',
 
 
         # material_func.py
@@ -83,7 +83,7 @@ translation_dict = {
 
         # action_panel.py
         ('*', 'Action Panel'): '动作面板',
-        ('*', 'Fast Bake Action Dialog'): '快速烘焙对话框',
+        ('Operator', 'Fast Bake Action Dialog'): '快速烘焙对话框',
         ('*', 'Action name'): '动作名',
         ('*', 'Frame start'): '起始帧',
         ('*', 'Frame end'): '结束帧',
@@ -95,18 +95,16 @@ translation_dict = {
         ('*', 'Max clean cycle'): '最多重复清理次数',
         ('*', 'Clean redundant frame'): '清理冗余帧',
         ('*', 'Active action'): '激活为当前动作',
-
-        ('*', 'Clean Action Dialog'): '清理动作对话框',
+        ('Operator', 'Clean Action Dialog'): '清理动作对话框',
 
 
         # action_func.py
-        ('*', 'Clean Action Dialog'): '清理动作对话框',
         ('*', 'No found any active action on actived armature.'): '目标骨架发现没有激活的动画对象。',
 
 
         # morph_panel.py
         ('*', 'Morph Panel'): '变形面板',
-        ('*', 'Replace Material Morph Related Mesh Dialog'): '材质变形相关网格替换对话框',
+        ('Operator', 'Replace Material Morph Related Mesh Dialog'): '材质变形相关网格替换对话框',
         ('*', 'old mesh name patten'): '待替换网格名，支持通配符',
         ('*', 'new mesh name'): '新网格名',
 
@@ -117,10 +115,10 @@ translation_dict = {
 
         # rigidbody_panel.py
         ('*', 'Rigidbody Panel'): '刚体面板',
-        ('*', 'Select all non bone ref rigid'): '选择所有没有引用任何骨骼的刚体',
-        ('*', 'Auto rename selected rigidbody'): '智能重命名选择的刚体',
-        ('*', 'Select joint by selected rigidbody'): '基于已选择的刚体选择关联的约束点(J点)',
-        ('*', 'Select bone by selected rigidbody'): '基于已选择的刚体选择关联的骨骼',
+        ('Operator', 'Select all non bone ref rigid'): '选择所有没有引用任何骨骼的刚体',
+        ('Operator', 'Auto rename selected rigidbody'): '自动重命名选择的刚体',
+        ('Operator', 'Select joint by selected rigidbody'): '基于已选择的刚体选择关联的约束点(J点)',
+        ('Operator', 'Select bone by selected rigidbody'): '基于已选择的刚体选择关联的骨骼',
 
 
         # rigidbody_func.py
@@ -131,18 +129,21 @@ translation_dict = {
         
 
         # joint_panel.py
-        ('*', 'Joint Panel'): '约束点(J点)面板',
-        ('*', 'Select all invalid joint'): '选择所有无效约束点',
-        ('*', 'Auto Rename selected joint'): '自动重命名已选择的约束点',
-        ('*', 'Select rigidbody by selected joint'): '选择刚体基于已选择的约束点',
+        ('*', 'Joint Panel'): '约束点（J点）面板',
+        ('Operator', 'Select all invalid joint'): '选择所有无效约束点',
+        ('Operator', 'Auto Rename selected joint'): '自动重命名已选择的约束点',
+        ('Operator', 'Select rigidbody by selected joint'): '选择刚体基于已选择的约束点',
+        
+        
+        # joint_func.py
         ('*', 'Please select at least one MMD joint.'): '请至少选中一个MMD约束点。',
         
         
         # other_panel.py
         ('*', 'Other Panel'): '其他面板',
-        ('*', 'Delete all vrm obj'): '删除所有VRM对象',
-        ('*', 'Delete all invalid driver'): '删除所有无效驱动器',
-        ('*', 'Delete all ghost object'): '删除所有幽灵对象',
+        ('Operator', 'Delete all vrm obj'): '删除所有VRM对象',
+        ('Operator', 'Delete all invalid driver'): '删除所有无效驱动器',
+        ('Operator', 'Delete all ghost object'): '删除所有幽灵对象',
         
 
         # other_func.py
