@@ -39,16 +39,18 @@ class FastBakeActionDialogOperator(Operator):
     use_no_scale:               BoolProperty(name="No scale", default=False)
     use_exist:                  BoolProperty(name="Override existing action", default=False)
     use_disable_constraints:    BoolProperty(name="Disable constraints after baking", default=True)
-    clean_eps:                  FloatProperty(name="Clean eps", default=1e-4)
+    clean_threshold:            FloatProperty(name="Clean threshold", default=1e-4)
     max_clean_cycle:            IntProperty(name="Max clean cycle", default=0)
     use_clean:                  BoolProperty(name="Clean redundant frame", default=True)
+    clean_start_point:          BoolProperty(name="Clean start point", default=False)
+    clean_end_point:            BoolProperty(name="Clean end point", default=False)
     use_active:                 BoolProperty(name="Active action", default=True)
 
     def execute(self, context):
         action_func.fast_bake_action(
             self.action_name, self.frame_start, self.frame_end, self.frame_step,
             self.use_no_scale, self.use_exist, self.use_disable_constraints,
-            self.clean_eps, self.max_clean_cycle, self.use_clean,
+            self.clean_threshold, self.max_clean_cycle, self.use_clean, self.clean_start_point, self.clean_end_point,
             self.use_active)
         return {'FINISHED'}
 
@@ -66,11 +68,14 @@ class CleanActionDialogOperator(Operator):
     bl_idname = "object.clean_action_dialog"
     bl_label = "Clean Action Dialog"
 
-    clean_eps:                  FloatProperty(name="Clean eps", default=1e-4)
+    clean_threshold:            FloatProperty(name="Clean threshold", default=1e-4)
     max_clean_cycle:            IntProperty(name="Max clean cycle", default=0)
+    clean_start_point:          BoolProperty(name="Clean start point", default=False)
+    clean_end_point:            BoolProperty(name="Clean end point", default=False)
 
     def execute(self, context):
-        action_func.clean_action(self.clean_eps, self.max_clean_cycle)
+        action_func.clean_action(self.clean_threshold, self.max_clean_cycle,
+            self.clean_start_point, self.clean_end_point)
         return {'FINISHED'}
 
     def invoke(self, context, event):

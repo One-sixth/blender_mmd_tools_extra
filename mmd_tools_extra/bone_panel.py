@@ -28,6 +28,7 @@ class MTE_Bone_Panel(bpy.types.Panel):
         layout.operator(OT_AutoSettingAndHideTipBone.bl_idname)
         layout.operator(OT_SelectRigidbodyBySelectedBone.bl_idname)
         layout.operator(OT_DisconnectAllPhysicalBone.bl_idname)
+        layout.operator(OT_CancelDisconnectAllPhysicalBone.bl_idname)
 
 
 @_add_cls

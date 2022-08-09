@@ -55,14 +55,16 @@ def get_or_create_fcurve(action, bone_name, channel_i, axis_i, data_path):
     return fc
 
 
-def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
-    # 本步中，关键帧必须是按时间顺序排列的，否则可能会发生意外
+def clean_fcurve(all_bone_fcurves, threshold=1e-4, max_clean_cycle=-1, clean_start_point=False, clean_end_point=False):
     # modify from Blender/3.2/scripts/modules/bpy_extras/anim_utils.py
 
     # clean_orig_data = {fcu: {p.co[1] for p in fcu.keyframe_points} for fcu in action.fcurves}
 
     if max_clean_cycle <= 0:
         max_clean_cycle = inf
+    
+    # 成功清理计数
+    del_count = 0
 
     for fcu_i, fcu in enumerate(all_bone_fcurves):
         update_progress(f'Cleaning bone curves.', (fcu_i+1)/len(all_bone_fcurves))
@@ -75,8 +77,6 @@ def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
         # 加入循环清理
         need_next_clean_cycle = True
         cur_clean_cycle = 0
-        # 成功清理计数
-        del_count = 0
 
         while need_next_clean_cycle and cur_clean_cycle < max_clean_cycle:
             cur_clean_cycle += 1
@@ -84,6 +84,8 @@ def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
 
             keyframe_points = fcu.keyframe_points
             i = 1
+
+            last_del_count = del_count
 
             while i < len(keyframe_points) - 1:
                 val = keyframe_points[i].co[1]
@@ -99,7 +101,7 @@ def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
                 val_prev = keyframe_points[i - 1].co[1]
                 val_next = keyframe_points[i + 1].co[1]
                 
-                # 新增判断，线性模式下特别处理
+                # 新增判断，线性插值模式下特别处理
                 frame_prev = keyframe_points[i - 1].co[0]
                 frame_next = keyframe_points[i + 1].co[0]
 
@@ -108,22 +110,52 @@ def clean_fcurve(all_bone_fcurves, eps=1e-4, max_clean_cycle=-1):
 
                 is_linear = keyframe_points[i].interpolation == 'LINEAR' and keyframe_points[i + 1].interpolation == 'LINEAR'
 
-                if abs(val - val_prev) + abs(val - val_next) < eps or\
-                    (is_linear and abs(val - val_interp) < eps):
+                if (abs(val - val_prev) <= threshold and abs(val - val_next) <= threshold) or\
+                    (is_linear and abs(val - val_interp) <= threshold):
                     need_next_clean_cycle = True
-                    keyframe_points.remove(keyframe_points[i])
+                    keyframe_points.remove(keyframe_points[i], fast=True)
                     del_count += 1
 
                 else:
                     i += 1
+            
+            if del_count - last_del_count == 0:
+                # 最后一轮，必定不会删除任何帧，进入右端点（结束端点）检查
+                if clean_end_point and len(keyframe_points) > 1:
+                    if abs(keyframe_points[-1].co[1] - keyframe_points[-2].co[1]) <= threshold and keyframe_points[-1].interpolation == 'LINEAR':
+                        keyframe_points.remove(keyframe_points[-1], fast=True)
+                        del_count += 1
+
+                # 检查左端点（起始端点）
+                if clean_start_point and len(keyframe_points) == 1:
+                    if abs(keyframe_points[0].co[1]) <= threshold:
+                        keyframe_points.remove(keyframe_points[0], fast=True)
+                        del_count += 1
+
+            # print(f'{cur_clean_cycle} - {del_count-last_del_count}')
     
+    finish_progress()
     print(f'Cleaning bone curves finish. Del {del_count} Frame.')
+
+
+# def clean_fcurve_buildin(action, eps=1e-4):
+#     # Bad, Invalid context
+#     if bpy.context.active_object is None:
+#         print('Error! No found active object.')
+#         return False
+
+#     ori_action = bpy.context.active_object.animation_data.action
+#     bpy.context.active_object.animation_data.action = action
+#     bpy.ops.action.clean(eps)
+#     bpy.context.active_object.animation_data.action = ori_action
+#     print('Clean fcurve complete.')
+#     return True
 
 
 def fast_bake_action(
     action_name='', frame_start=1, frame_end=250, frame_step=1,
     use_no_scale=False, use_exist=False, use_disable_constraints=False,
-    clean_eps=1e-4, max_clean_cycle=0, use_clean=True,
+    clean_threshold=1e-4, max_clean_cycle=0, use_clean=True, clean_start_point=False, clean_end_point=False,
     use_active=True):
     '''
     快速烘焙
@@ -230,14 +262,12 @@ def fast_bake_action(
         data_path = f'pose.bones["{n}"].location'
         for axis_i in range(3):
             channel_i = axis_i
-            # fcurves[axis_i] = action.fcurves.new(data_path=data_path, index=axis_i, action_group=n)
             fcurves[channel_i] = get_or_create_fcurve(action, n, channel_i, axis_i, data_path=data_path)
             
 
         data_path = f'pose.bones["{n}"].rotation_quaternion'
         for axis_i in range(4):
             channel_i = 3+axis_i
-            # fcurves[3+axis_i] = action.fcurves.new(data_path=data_path, index=axis_i, action_group=n)
             fcurves[channel_i] = get_or_create_fcurve(action, n, channel_i, axis_i, data_path=data_path)
         
         # 如果不要缩放变换
@@ -245,7 +275,6 @@ def fast_bake_action(
             data_path = f'pose.bones["{n}"].scale'
             for axis_i in range(3):
                 channel_i = 3+4+axis_i
-                # fcurves[3+4+axis_i] = action.fcurves.new(data_path=data_path, index=axis_i, action_group=n)
                 fcurves[channel_i] = get_or_create_fcurve(action, n, channel_i, axis_i, data_path=data_path)
         
         cur_bone_kps = bone_kps[n]
@@ -273,10 +302,14 @@ def fast_bake_action(
         disable_all_constraints(pose_bones)
 
     if use_active:
-        arm_obj.animation_data.action = action
+        try:
+            arm_obj.animation_data.action = action
+        except AttributeError as e:
+            print('Catch exception.', str(e.with_traceback()))
+            print('Warning! Activate new action failure. you need to activate it manually.')
     
     if use_clean:
-        clean_fcurve(all_bone_fcurves, clean_eps, max_clean_cycle)
+        clean_fcurve(all_bone_fcurves, clean_threshold, max_clean_cycle)
     
     end_time = time.time()
     print(f'Cost time {end_time-start_time:.3f}')
@@ -284,7 +317,7 @@ def fast_bake_action(
     alert_msg('Info', 'Success.')
 
 
-def clean_action(clean_eps=1e-4, max_clean_cycle=0):
+def clean_action(clean_threshold=1e-4, max_clean_cycle=0, clean_start_point=False, clean_end_point=False):
 
     if bpy.context.mode not in ['POSE']:
         alert_msg('Error', 'This function can only be used in Pose Mode.')
@@ -313,5 +346,5 @@ def clean_action(clean_eps=1e-4, max_clean_cycle=0):
             for channel in group.channels:
                 channels.append(channel)
     
-    clean_fcurve(channels, clean_eps, max_clean_cycle)
+    clean_fcurve(channels, clean_threshold, max_clean_cycle, clean_start_point, clean_end_point)
     alert_msg('Info', 'Success.')

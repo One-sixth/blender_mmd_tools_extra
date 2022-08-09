@@ -93,10 +93,12 @@ translation_dict = {
         ('*', 'No scale'): '不使用缩放帧',
         ('*', 'Override existing action'): '覆盖已有动作',
         ('*', 'Disable constraints after baking'): '烘焙完成后禁用约束',
-        ('*', 'Clean eps'): '清除阈值',
+        ('*', 'Clean threshold'): '清除阈值',
         ('*', 'Max clean cycle'): '最多重复清理次数',
         ('*', 'Clean redundant frame'): '清理冗余帧',
         ('*', 'Active action'): '激活为当前动作',
+        ('*', 'Clean start point'): '清理起始端点',
+        ('*', 'Clean end point'): '清理结束端点',
         ('Operator', 'Clean Action Dialog'): '清理动作对话框',
 
 
