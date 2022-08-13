@@ -172,9 +172,12 @@ def fast_bake_action(
     :param use_disable_constraints      烘焙完成后是否把约束都禁用掉
     :param use_active                   是否激活新序列
     '''
-    if bpy.context.mode not in ['POSE']:
-        alert_msg('Error', 'This function can only be used in Pose Mode.')
+    if bpy.context.mode not in ['POSE', 'EDIT_ARMATURE']:
+        alert_msg('Error', 'This function can only be used in Pose Mode and Armature Edit Mode.')
         return
+    
+    if bpy.context.mode == 'EDIT_ARMATURE':
+        bpy.ops.object.mode_set(mode='POSE')
 
     # frame_end 也需要包括进来
     frame_end += 1
@@ -232,6 +235,10 @@ def fast_bake_action(
             bone_kps.setdefault(b.name, [])
             bone_kps[b.name].append([frame_cur, t, r, s])
     finish_progress()
+
+    # 检查是否已有动画数据
+    if arm_obj.animation_data is None:
+        arm_obj.animation_data_create()
 
     # 动作名检查
     if action_name == '':
@@ -306,7 +313,13 @@ def fast_bake_action(
             arm_obj.animation_data.action = action
         except AttributeError as e:
             print('Catch exception.', str(e.with_traceback()))
-            print('Warning! Activate new action failure. you need to activate it manually.')
+            # ！破坏性操作，但是符合多数人的直觉
+            # 激活新动作失败，多半是因为使用了NLA序列
+            # 直接清除掉只读的动作堆栈就行
+            arm_obj.animation_data_clear()
+            arm_obj.animation_data_create()
+            arm_obj.animation_data.action = action
+            # print('Warning! Activate new action failure. you need to activate it manually.')
     
     if use_clean:
         clean_fcurve(all_bone_fcurves, clean_threshold, max_clean_cycle)
@@ -319,9 +332,12 @@ def fast_bake_action(
 
 def clean_action(clean_threshold=1e-4, max_clean_cycle=0, clean_start_point=False, clean_end_point=False):
 
-    if bpy.context.mode not in ['POSE']:
-        alert_msg('Error', 'This function can only be used in Pose Mode.')
+    if bpy.context.mode not in ['POSE', 'EDIT_ARMATURE']:
+        alert_msg('Error', 'This function can only be used in Pose Mode and Armature Edit Mode.')
         return
+    
+    if bpy.context.mode == 'EDIT_ARMATURE':
+        bpy.ops.object.mode_set(mode='POSE')
 
     arm_obj = bpy.context.active_object
     if arm_obj.type != 'ARMATURE':

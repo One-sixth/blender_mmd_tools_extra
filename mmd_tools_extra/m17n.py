@@ -141,7 +141,7 @@ translation_dict = {
         ('*', 'Joint Panel'): '约束点（J点）面板',
         ('Operator', 'Select all invalid joint'): '选择所有无效约束点',
         ('Operator', 'Auto Rename selected joint'): '自动重命名已选择的约束点',
-        ('Operator', 'Select rigidbody by selected joint'): '选择刚体基于已选择的约束点',
+        ('Operator', 'Select rigidbody by selected joint'): '基于已选择的约束点选择刚体',
         
         
         # joint_func.py
