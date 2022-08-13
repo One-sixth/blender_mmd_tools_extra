@@ -82,30 +82,6 @@ translation_dict = {
         ('*', 'Please select at least one mesh object.'): '请选中至少一个网格对象。',
         ('*', 'No MMD materials were found in the selected mesh object.'): '在选择的网格对象中没有发现任何MMD材质。',
 
-
-        # action_panel.py
-        ('*', 'Action Panel'): '动作面板',
-        ('Operator', 'Fast Bake Action Dialog'): '快速烘焙对话框',
-        ('*', 'Action name'): '动作名',
-        ('*', 'Frame start'): '起始帧',
-        ('*', 'Frame end'): '结束帧',
-        ('*', 'Frame step'): '帧步长',
-        ('*', 'No scale'): '不使用缩放帧',
-        ('*', 'Override existing action'): '覆盖已有动作',
-        ('*', 'Disable constraints after baking'): '烘焙完成后禁用约束',
-        ('*', 'Clean threshold'): '清除阈值',
-        ('*', 'Max clean cycle'): '最多重复清理次数',
-        ('*', 'Clean redundant frame'): '清理冗余帧',
-        ('*', 'Active action'): '激活为当前动作',
-        ('*', 'Clean start point'): '清理起始端点',
-        ('*', 'Clean end point'): '清理结束端点',
-        ('Operator', 'Clean Action Dialog'): '清理动作对话框',
-
-
-        # action_func.py
-        ('*', 'No found any active action on actived armature.'): '目标骨架发现没有激活的动画对象。',
-
-
         # morph_panel.py
         ('*', 'Morph Panel'): '变形面板',
         ('Operator', 'Replace Material Morph Related Mesh Dialog'): '材质变形相关网格替换对话框',
@@ -147,6 +123,29 @@ translation_dict = {
         # joint_func.py
         ('*', 'Please select at least one MMD joint.'): '请至少选中一个MMD约束点。',
         
+
+        # action_panel.py
+        ('*', 'Action Panel'): '动作面板',
+        ('Operator', 'Fast Bake Action Dialog'): '快速烘焙对话框',
+        ('*', 'Action name'): '动作名',
+        ('*', 'Frame start'): '起始帧',
+        ('*', 'Frame end'): '结束帧',
+        ('*', 'Frame step'): '帧步长',
+        ('*', 'No scale'): '不使用缩放帧',
+        ('*', 'Override existing action'): '覆盖已有动作',
+        ('*', 'Disable constraints after baking'): '烘焙完成后禁用约束',
+        ('*', 'Clean threshold'): '清除阈值',
+        ('*', 'Max clean cycle'): '最多重复清理次数',
+        ('*', 'Clean redundant frame'): '清理冗余帧',
+        ('*', 'Active action'): '激活为当前动作',
+        ('*', 'Clean start point'): '清理起始端点',
+        ('*', 'Clean end point'): '清理结束端点',
+        ('Operator', 'Clean Action Dialog'): '清理动作对话框',
+
+
+        # action_func.py
+        ('*', 'No found any active action on actived armature.'): '目标骨架发现没有激活的动画对象。',
+
         
         # other_panel.py
         ('*', 'Other Panel'): '其他面板',
