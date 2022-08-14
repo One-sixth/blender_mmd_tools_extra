@@ -121,7 +121,7 @@ Object Mode.
 Object Mode. Requires at least one rigidbody to be selected.  
 物体模式。需要选中至少一个约束点对象。  
 
-Rename example/重命名示例：280.joint.ひじ.L->袖_0_1.L  
+Example/示例：280.joint.ひじ.L->袖_0_1.L  
 
 ### Select rigidbody by selected joint / 基于已选择的约束点选择刚体
 Object Mode. Requires at least one rigidbody to be selected.  
