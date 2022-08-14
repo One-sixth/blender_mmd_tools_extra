@@ -14,6 +14,8 @@ Recommended Blender version 3.2.2 or newer
 最低 Blender 支持版本 Blender 3.0  
 建议 Blender 版本 3.2.2 或更新  
 
+blender_mmd_tools Link: https://github.com/UuuNyaa/blender_mmd_tools/tree/main
+
 
 # Features / 功能介绍
 
