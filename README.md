@@ -176,9 +176,11 @@ All objects that do not belong to any scene and view layers will be deleted.
 # Design Principles / 设计原则
 Functions will be made as self-contained as possible.  
 The functions of the various modules will refer to each other as little as possible.  
+Will be as compatible with the latest blender release as possible.  
 
 将尽可能使功能自我完备。  
 各个模块的功能将尽可能少互相引用。  
+将会尽可能与最新的blender发行版兼容。  
 
 
 # API stability / API稳定性
