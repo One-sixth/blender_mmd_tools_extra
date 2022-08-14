@@ -171,3 +171,23 @@ All objects that do not belong to any scene and view layers will be deleted.
 将会全部删除不属于任何场景和视图层的物体对象。  
 
 ----------------------------------------------------------------------
+
+
+# Design Principles / 设计原则
+Functions will be made as self-contained as possible.  
+The functions of the various modules will refer to each other as little as possible.  
+
+将尽可能使功能自我完备。  
+各个模块的功能将尽可能少互相引用。  
+
+
+# API stability / API稳定性
+The API is currently unstable, and function names and parameters may continue to change.  
+If you find that a function is very suitable for your own plugin, it is recommended to copy the corresponding function into your plugin.  
+
+目前 API 尚不稳定，函数名和参数可能会继续更改。  
+如果你发现一个功能很适合你自己写的插件，建议复制对应的功能函数到你的插件中。  
+
+
+# License / 协议
+GPLv3  
