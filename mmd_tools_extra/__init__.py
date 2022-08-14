@@ -1,18 +1,17 @@
 bl_info = {
-    "name": "mmd_tool_extra",           #插件名字
-    "author": "onesixth",               #作者名字
-    "version": (0, 0, 1),               #插件版本
-    "blender": (3, 0, 0),               #需要的*最低* blender 版本
-    "location": "3DView > Tools",       #插件所在位置
-    "description": "用于mmd_tool扩展",  #描述
-    "support": 'COMMUNITY',             #支持等级（社区支持）
-    "category": "Tool",                 #分类
+    "name": "mmd_tools_extra",
+    "author": "onesixth",
+    "version": (0, 0, 2),
+    "blender": (3, 2, 0),
+    "location": "3DView > Tools",
+    "description": "Extra functionality for blender_mmd_tools.",
+    "support": 'COMMUNITY',
+    "category": "Tool",
+    "wiki_url": "https://github.com/One-sixth/blender_mmd_tools_extra/tree/main",
     #"warning": "",
 }
 
 import bpy
-from bpy.types import Operator
-from bpy.props import BoolProperty
 
 from . import bone_panel
 from . import material_panel
