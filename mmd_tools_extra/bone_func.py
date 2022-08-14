@@ -1,5 +1,5 @@
 import bpy
-from .misc import alert_msg, filter_mmd_rigidbody
+from .misc import alert_msg, filter_mmd_rigidbody, symmetric_x_blender_name, symmetric_x_mmd_name_j, symmetric_x_vector
 from mmd_tools.core.model import FnModel
 
 
@@ -40,33 +40,52 @@ def symmetric_selected_bones_x():
     selected_bone_names = [b.name for b in bpy.context.selected_editable_bones]
 
     edit_bones = arm.edit_bones
+    pose_bones = arm_obj.pose.bones
 
     warning_found_target_bone_in_selected_bone = False
 
     for n in selected_bone_names:
-        tn = None
-        if n.endswith('.L'):
-            tn = n[:-2] + '.R'
-        elif n.endswith('.R'):
-            tn = n[:-2] + '.L'
+        tn = symmetric_x_blender_name(n)
         
         # 检查目标骨骼是否在选中的骨骼中
         if tn in selected_bone_names:
             warning_found_target_bone_in_selected_bone = True
         
         if tn is not None and tn in edit_bones:
-            edit_bones[tn].head.x = -edit_bones[n].head.x
-            edit_bones[tn].head.yz = edit_bones[n].head.yz
-            
-            edit_bones[tn].tail.x = -edit_bones[n].tail.x
-            edit_bones[tn].tail.yz = edit_bones[n].tail.yz
-            
+            edit_bones[tn].head = symmetric_x_vector(edit_bones[n].head)
+            edit_bones[tn].tail = symmetric_x_vector(edit_bones[n].tail)
             edit_bones[tn].roll = -edit_bones[n].roll
-            
             edit_bones[tn].tail_radius = edit_bones[n].tail_radius
             edit_bones[tn].envelope_distance = edit_bones[n].envelope_distance
-            
             # print(f'{n} -> {tn}')
+
+        # 处理mmd_bone
+        pose_bones[tn].mmd_bone.name_j = symmetric_x_mmd_name_j(pose_bones[n].mmd_bone.name_j)
+        pose_bones[tn].mmd_bone.transform_order = pose_bones[n].mmd_bone.transform_order
+        pose_bones[tn].mmd_bone.is_controllable = pose_bones[n].mmd_bone.is_controllable
+        pose_bones[tn].mmd_bone.transform_after_dynamics = pose_bones[n].mmd_bone.transform_after_dynamics
+        pose_bones[tn].mmd_bone.is_tip = pose_bones[n].mmd_bone.is_tip
+
+        pose_bones[tn].mmd_bone.enabled_fixed_axis = pose_bones[n].mmd_bone.enabled_fixed_axis
+        pose_bones[tn].mmd_bone.fixed_axis = symmetric_x_vector(pose_bones[n].mmd_bone.fixed_axis)
+
+        pose_bones[tn].mmd_bone.enabled_local_axes = pose_bones[n].mmd_bone.enabled_local_axes
+        pose_bones[tn].mmd_bone.local_axis_x = symmetric_x_vector(pose_bones[n].mmd_bone.local_axis_x)
+        pose_bones[tn].mmd_bone.local_axis_z = symmetric_x_vector(pose_bones[n].mmd_bone.local_axis_z)
+
+        tmp_bone_name = symmetric_x_blender_name(pose_bones[n].mmd_bone.additional_transform_bone)
+        if tmp_bone_name in edit_bones:
+            pose_bones[tn].mmd_bone.additional_transform_bone = tmp_bone_name
+            pose_bones[tn].mmd_bone.has_additional_location = pose_bones[n].mmd_bone.has_additional_location
+            pose_bones[tn].mmd_bone.has_additional_rotation = pose_bones[n].mmd_bone.has_additional_rotation
+        else:
+            pose_bones[tn].mmd_bone.additional_transform_bone = ''
+            pose_bones[tn].mmd_bone.has_additional_location = False
+            pose_bones[tn].mmd_bone.has_additional_rotation = False
+        pose_bones[tn].mmd_bone.additional_transform_influence = pose_bones[n].mmd_bone.additional_transform_influence
+
+    # 更新附加变换设定
+    bpy.ops.mmd_tools.apply_additional_transform()
 
     # 恢复原先的镜像设置
     arm.use_mirror_x = last_use_mirror_x

@@ -41,3 +41,29 @@ def filter_mmd_joint(objs):
             obj.mmd_joint is not None:
             keep.append(obj)
     return keep
+
+
+def symmetric_x_blender_name(n: str):
+    if n.endswith('.L'):
+        tn = n[:-2] + '.R'
+    elif n.endswith('.R'):
+        tn = n[:-2] + '.L'
+    else:
+        tn = n
+    return tn
+
+
+def symmetric_x_mmd_name_j(n: str):
+    if n.startswith('右'):
+        tn = '左' + n[1:]
+    elif n.startswith('左'):
+        tn = '右' + n[1:]
+    else:
+        tn = n
+    return tn
+
+
+def symmetric_x_vector(v: Vector):
+    v = v.copy()
+    v.x = -v.x
+    return v
