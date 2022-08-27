@@ -5,7 +5,6 @@ from mmd_tools.core.material import FnMaterial
 
 
 def batch_setting_mmd_material_prop(mte_material_prop):
-
     mesh_objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
 
     if len(mesh_objs) == 0:
@@ -18,8 +17,10 @@ def batch_setting_mmd_material_prop(mte_material_prop):
 
     for obj in mesh_objs:
         for i in range(len(obj.material_slots)):
-            # 材质槽是不可修改的，必须使用名字获得真正的材质对象
-            mat = bpy.data.materials[obj.material_slots[i].name]
+            # 材质槽是不可修改的，必须获得真正的材质对象
+            mat = obj.material_slots[i].material
+            if mat is None:
+                continue
 
             # 目标材质必须有mmd_material属性
             if hasattr(mat, 'mmd_material') and mat.mmd_material is not None:
@@ -172,11 +173,12 @@ def remove_all_redundant_mmd_shader_group():
         return
 
     mats = []
-
     for obj in mesh_objs:
         for i in range(len(obj.material_slots)):
-            # 材质槽是不可修改的，必须使用名字获得真正的材质对象
-            mat = bpy.data.materials[obj.material_slots[i].name]
+            # 材质槽是不可修改的，必须获得真正的材质对象
+            mat = obj.material_slots[i].material
+            if mat is None:
+                continue
 
             # 目标材质必须有mmd_material属性，必须启用节点组
             if hasattr(mat, 'mmd_material') and mat.mmd_material is not None and mat.use_nodes:
@@ -209,4 +211,83 @@ def remove_all_redundant_mmd_shader_group():
     replace_node_group('MMDShaderDev', 'mmd_shader')
     replace_node_group('MMDTexUV', 'mmd_tex_uv')
     
+    alert_msg('Info', 'Success.')
+
+
+def copy_material_from_data_to_object(reverse_copy, use_swap, use_ref, keep_slot_link):
+    objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
+
+    if len(objs) == 0:
+        alert_msg('Info', 'Please select at least one mesh object.')
+        return
+
+    for obj in objs:
+        for slot in obj.material_slots:
+            ori_slot_link = slot.link
+
+            if not reverse_copy:
+                slot.link = 'DATA'
+                mat = slot.material
+                if not use_ref and mat is not None:
+                    mat = mat.copy()
+
+                slot.link = 'OBJECT'
+                mat2 = slot.material
+                slot.material = mat
+
+                if use_swap:
+                    slot.link = 'DATA'
+                    slot.material = mat2
+                
+                if keep_slot_link:
+                    slot.link = ori_slot_link
+                else:
+                    slot.link = 'OBJECT'
+
+            else:
+                slot.link = 'OBJECT'
+                mat = slot.material
+                if not use_ref and mat is not None:
+                    mat = mat.copy()
+
+                slot.link = 'DATA'
+                mat2 = slot.material
+                slot.material = mat
+
+                if use_swap:
+                    slot.link = 'OBJECT'
+                    slot.material = mat2
+                
+                if keep_slot_link:
+                    slot.link = ori_slot_link
+                else:
+                    slot.link = 'DATA'
+
+    alert_msg('Info', 'Success.')
+
+
+def user_remap_material_from_data_to_object(use_reverse):
+    objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
+
+    if len(objs) == 0:
+        alert_msg('Info', 'Please select at least one mesh object.')
+        return
+
+    for obj in objs:
+        for slot in obj.material_slots:
+            ori_slot_link = slot.link
+
+            slot.link = 'OBJECT'
+            obj_mat = slot.material
+            slot.link = 'DATA'
+            data_mat = slot.material
+
+            if obj_mat is not None and data_mat is not None:
+                if not use_reverse:
+                    data_mat.user_remap(obj_mat)
+                else:
+                    obj_mat.user_remap(data_mat)
+            
+            slot.link = ori_slot_link
+
     alert_msg('Info', 'Success.')

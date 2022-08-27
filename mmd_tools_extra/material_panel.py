@@ -319,6 +319,8 @@ class MTE_Material_Panel_L2(Panel):
         layout = self.layout
         # -----------------------------------------------------------------------------------------
         layout.operator(OT_RemoveAllRedundantMmdShaderGroup.bl_idname)
+        layout.operator(OT_CopyMaterialFromDataToObjectDialogOperator.bl_idname)
+        layout.operator(OT_UserRemapMaterialFromDataToObjectDialogOperator.bl_idname)
 
 
 @_add_cls
@@ -330,6 +332,45 @@ class OT_RemoveAllRedundantMmdShaderGroup(Operator):
     def execute(self, context):
         material_func.remove_all_redundant_mmd_shader_group()
         return {'FINISHED'}
+
+
+@_add_cls
+class OT_CopyMaterialFromDataToObjectDialogOperator(Operator):
+    bl_idname = "object.copy_material_from_data_to_object_dialog"
+    bl_label = "Copy Material From Data To Object Dialog"
+
+    reverse_copy:   BoolProperty(name="Reverse copy", default=False)
+    use_swap:       BoolProperty(name="Swap", default=False)
+    use_ref:        BoolProperty(name="Reference", default=False)
+    keep_slot_link: BoolProperty(name="Keep origin slot link", default=False)
+
+    def execute(self, context):
+        material_func.copy_material_from_data_to_object(
+            self.reverse_copy, self.use_swap,
+            self.use_ref, self.keep_slot_link
+        )
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+
+
+@_add_cls
+class OT_UserRemapMaterialFromDataToObjectDialogOperator(Operator):
+    bl_idname = "object.user_remap_material_from_data_to_object_dialog"
+    bl_label = "User Remap Material From Data To Object Dialog"
+
+    use_reverse:    BoolProperty(name="Reverse", default=False)
+
+    def execute(self, context):
+        material_func.user_remap_material_from_data_to_object(self.use_reverse)
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+
 
 
 # -------------------------------------------------------------------------------

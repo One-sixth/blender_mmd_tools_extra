@@ -20,10 +20,11 @@ from . import rigidbody_panel
 from . import joint_panel
 from . import action_panel
 from . import other_panel
+from . import override_library_panel
 from .m17n import translation_dict
 
 
-panel_cls = [bone_panel, material_panel, morph_panel, rigidbody_panel, joint_panel, action_panel, other_panel]
+panel_cls = [bone_panel, material_panel, morph_panel, rigidbody_panel, joint_panel, action_panel, other_panel, override_library_panel]
 
 
 def register():
