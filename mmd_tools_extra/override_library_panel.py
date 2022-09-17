@@ -16,6 +16,7 @@ class MTE_OverrideLibrary_Panel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = 'MTE'
     bl_context = ''
+    bl_options = {'DEFAULT_CLOSED'}
     bl_idname = 'MTE_PT_OverrideLibrary_Panel'
     # 菜单名字
     bl_label = 'OverrideLibrary Panel'
@@ -29,8 +30,8 @@ class MTE_OverrideLibrary_Panel(bpy.types.Panel):
 
 @_add_cls
 class BatchCreateOverrideLibraryDialogOperator(Operator):
-    bl_idname = "object.batch_create_override_library_dialog"
-    bl_label = "Batch Create OverrideLibrary Dialog"
+    bl_idname = 'object.batch_create_override_library_dialog'
+    bl_label = 'Batch Create OverrideLibrary Dialog'
 
     '''
     :param make_local
@@ -45,16 +46,16 @@ class BatchCreateOverrideLibraryDialogOperator(Operator):
     :param include_camera_data
     '''
 
-    make_local:                 BoolProperty(name="Make local", default=False)
-    recusive_children:          BoolProperty(name="Recusive children", default=True)
-    include_mesh:               BoolProperty(name="Mesh", default=True)
-    include_mesh_data:          BoolProperty(name="Mesh data", default=True)
-    include_material:           BoolProperty(name="Material", default=True)
-    include_armature:           BoolProperty(name="Armature", default=True)
-    include_armature_data:      BoolProperty(name="Armature data", default=True)
-    include_empty:              BoolProperty(name="Empty", default=True)
-    include_camera:             BoolProperty(name="Camera", default=True)
-    include_camera_data:        BoolProperty(name="Camera data", default=True)
+    make_local:                 BoolProperty(name='Make local', default=False)
+    recusive_children:          BoolProperty(name='Recusive children', default=True)
+    include_mesh:               BoolProperty(name='Mesh', default=True)
+    include_mesh_data:          BoolProperty(name='Mesh data', default=True)
+    include_material:           BoolProperty(name='Material', default=True)
+    include_armature:           BoolProperty(name='Armature', default=True)
+    include_armature_data:      BoolProperty(name='Armature data', default=True)
+    include_empty:              BoolProperty(name='Empty', default=True)
+    include_camera:             BoolProperty(name='Camera', default=True)
+    include_camera_data:        BoolProperty(name='Camera data', default=True)
 
     def execute(self, context):
         override_library_func.batch_create_override_library(

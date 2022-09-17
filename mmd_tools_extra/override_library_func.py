@@ -101,16 +101,10 @@ def batch_create_override_library(
                 d.hide_set(is_hide)
                 d.hide_select = is_hide_select
             else:
-                # if d.parent is not None and d.parent.library is not None:
-                #     # 必须要递归生成库覆盖
-                #     do_create_override(d.parent)
                 if d.library is not None:
                     # 后面我发现，只要使用逆序生成，就能尽可能保持结构
-                    # ori_parent = d.parent
+                    # 逆序排序将会在外面完成
                     d.override_create(remap_local_usages=True)
-                    # d.parent = ori_parent
-                    # cur_viewlayer.objects.active = d
-                    # bpy.ops.object.make_override_library()
         else:
             # DATA
             if make_local:
@@ -119,7 +113,7 @@ def batch_create_override_library(
                 if d.library is not None:
                     d.override_create(remap_local_usages=True)
     
-    # 本函数有bug，需要至少到 blender 3.3 stable 发布后才能使用
+    # 本函数有bug，blender 3.3 stable 发布后还是用不了
     # def do_create_override(d):
         # if make_local:
         #     d.make_local()

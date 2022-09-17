@@ -121,6 +121,7 @@ class MTE_Material_Panel(Panel):
     bl_region_type = 'UI'
     bl_category = 'MTE'
     bl_context = ''
+    bl_options = {'DEFAULT_CLOSED'}
     bl_idname = 'MTE_PT_Material_Panel'
     # 菜单名字
     bl_label = 'Material Panel'
@@ -310,6 +311,7 @@ class MTE_Material_Panel_L2(Panel):
     bl_region_type = 'UI'
     bl_category = 'MTE'
     bl_context = ''
+    bl_options = {'DEFAULT_CLOSED'}
     bl_idname = 'MTE_PT_Material_Panel_L2'
     # 菜单名字
     bl_label = 'Material Panel L2'

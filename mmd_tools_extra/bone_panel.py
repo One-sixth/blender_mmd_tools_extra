@@ -16,6 +16,7 @@ class MTE_Bone_Panel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = 'MTE'
     bl_context = ''
+    bl_options = {'DEFAULT_CLOSED'}
     bl_idname = 'MTE_PT_Bone_Panel'
     # 菜单名字
     bl_label = 'Bone Panel'

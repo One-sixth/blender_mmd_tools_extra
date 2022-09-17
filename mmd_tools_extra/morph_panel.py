@@ -16,6 +16,7 @@ class MTE_Morph_Panel(bpy.types.Panel):
     bl_region_type = 'UI'
     bl_category = 'MTE'
     bl_context = ''
+    bl_options = {'DEFAULT_CLOSED'}
     bl_idname = 'MTE_PT_Morph_Panel'
     # 菜单名字
     bl_label = 'Morph Panel'
