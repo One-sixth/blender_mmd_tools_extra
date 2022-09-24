@@ -23,10 +23,10 @@ def get_hide_icon(enabled):
         return 'HIDE_ON'
 
 
-def filter_mmd_rigidbody(objs):
+def filter_mmd_rigidbody(objs, allow_no_rigidbody=False):
     keep = []
     for obj in objs:
-        if obj.rigid_body is not None and\
+        if (allow_no_rigidbody or obj.rigid_body is not None) and\
             hasattr(obj, 'mmd_rigid') and\
             obj.mmd_rigid is not None:
             keep.append(obj)
