@@ -23,6 +23,16 @@ def get_hide_icon(enabled):
         return 'HIDE_ON'
 
 
+def find_mmd_root_obj(obj):
+    root_obj = None
+    while root_obj is None and obj is not None:
+        if hasattr(obj, 'mmd_type') and obj.mmd_type == 'ROOT':
+            root_obj = obj
+        else:
+            obj = obj.parent
+    return root_obj
+
+
 def filter_mmd_rigidbody(objs, allow_no_rigidbody=False):
     keep = []
     for obj in objs:

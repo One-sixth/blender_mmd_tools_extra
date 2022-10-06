@@ -323,6 +323,7 @@ class MTE_Material_Panel_L2(Panel):
         layout.operator(OT_RemoveAllRedundantMmdShaderGroup.bl_idname)
         layout.operator(OT_CopyMaterialFromDataToObjectDialogOperator.bl_idname)
         layout.operator(OT_UserRemapMaterialFromDataToObjectDialogOperator.bl_idname)
+        layout.operator(OT_CopyMaterialFromActivedToSelectedObjectDialog.bl_idname)
 
 
 @_add_cls
@@ -373,6 +374,25 @@ class OT_UserRemapMaterialFromDataToObjectDialogOperator(Operator):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
 
+
+@_add_cls
+class OT_CopyMaterialFromActivedToSelectedObjectDialog(Operator):
+    bl_idname = 'mte.copy_material_from_actived_to_selected_object_dialog'
+    bl_label = 'Copy Material From Actived To Selected Object Dialog'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    only_active_slot:   BoolProperty(name="Only active material slot", default=False)
+    use_ref:            BoolProperty(name="Reference", default=False)
+
+    def execute(self, context):
+        material_func.copy_material_from_active_to_select(
+            only_active_slot=self.only_active_slot, use_ref=self.use_ref
+        )
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
 
 
 # -------------------------------------------------------------------------------

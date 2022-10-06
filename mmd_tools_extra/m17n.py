@@ -83,12 +83,15 @@ translation_dict = {
         ('*', 'Swap'): '交换',
         ('*', 'Reference'): '引用',
         ('*', 'Keep origin slot link'): '保留原始材质槽链接',
-        
         ('Operator', 'User Remap Material From Data To Object Dialog'): '重映射材质引用从网格数据到网格对象对话框',
-
+        ('Operator', 'Copy Material From Actived To Selected Object Dialog'): '从激活对象复制材质到选择对象对话框',
+        ('*', 'Only active material slot'): '仅激活材质槽',
+        
         # material_func.py
         ('*', 'Please select at least one mesh object.'): '请选中至少一个网格对象。',
         ('*', 'No MMD materials were found in the selected mesh object.'): '在选择的网格对象中没有发现任何MMD材质。',
+        ('*', 'The actived object should be a valid mesh object.'): '激活对象需要是一个有效的网格对象。',
+        ('*', 'At least one other mesh object needs to be selected in addition to the active object.'): '除了激活对象还需要选中至少一个其他网格对象。',
 
         # morph_panel.py
         ('*', 'Morph Panel'): '变形面板',
@@ -256,13 +259,16 @@ translation_dict = {
         ('*', 'Swap'): '交換',
         ('*', 'Reference'): '引用',
         ('*', 'Keep origin slot link'): '元のマテリアル スロット リンクを保持',
-        
         ('Operator', 'User Remap Material From Data To Object Dialog'): 'メッシュ データからメッシュ オブジェクト ダイアログへのマテリアル参照の再マップ',
-
+        ('Operator', 'Copy Material From Actived To Selected Object Dialog'): 'アクティブオブジェクトからオブジェクトを選択するダイアログへマテリアルをコピーする',
+        ('*', 'Only active material slot'): 'アクティブな材質の溝だけを使う',
+        
         # material_func.py
         ('*', 'Please select at least one mesh object.'): '少なくとも 1 つのメッシュ オブジェクトを選択してください。',
         ('*', 'No MMD materials were found in the selected mesh object.'): '選択したメッシュ オブジェクトに MMD 素材が見つかりませんでした。',
-        
+        ('*', 'The actived object should be a valid mesh object.'): 'アクティブオブジェクトは有効なメッシュオブジェクトである必要がある。',
+        ('*', 'At least one other mesh object needs to be selected in addition to the active object.'): 'アクティブオブジェクトに加えて、少なくとも1つの他のメッシュオブジェクトを選択する必要がある。',
+
         # morph_panel.py
         ('*', 'Morph Panel'): '変形パネル',
         ('Operator', 'Replace Material Morph Related Mesh Dialog'): '材料変形関連のメッシュ置換ダイアログ',

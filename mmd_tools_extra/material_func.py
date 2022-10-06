@@ -1,6 +1,7 @@
+from unicodedata import name
 import bpy
 import fnmatch
-from .misc import alert_msg
+from .misc import alert_msg, find_mmd_root_obj
 from mmd_tools.core.material import FnMaterial
 
 
@@ -290,4 +291,54 @@ def user_remap_material_from_data_to_object(use_reverse):
             
             slot.link = ori_slot_link
 
+    alert_msg('Info', 'Success.')
+
+
+def copy_material_from_active_to_select(only_active_slot, use_ref):
+    active_obj = bpy.context.active_object
+    select_objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
+    
+    if active_obj is None or active_obj.type != 'MESH':
+        alert_msg('Error!', 'The actived object should be a valid mesh object.')
+        return
+
+    if active_obj in select_objs:
+        select_objs.remove(active_obj)
+    
+    if len(select_objs) == 0:
+        alert_msg('Error!', 'At least one other mesh object needs to be selected in addition to the active object.')
+        return
+
+    def ensure_enough_slots(obj, n_slot):
+        while len(obj.material_slots) < n_slot:
+            obj.data.materials.append(None)
+    
+    def update_mmd_material_morph_ref(obj, old_mat, new_mat):
+        if old_mat is None:
+            return
+        root_obj = find_mmd_root_obj(obj)
+        if root_obj is None:
+            return
+        for mat_morph in root_obj.mmd_root.material_morphs:
+            for mat_morph_item in mat_morph.data:
+                if mat_morph_item.material == old_mat.name:
+                    mat_morph_item.material = new_mat.name
+    
+    for obj in select_objs:
+        if only_active_slot:
+            old_mat = obj.active_material
+            new_mat = active_obj.active_material if use_ref else active_obj.active_material.copy()
+
+            update_mmd_material_morph_ref(obj, old_mat, new_mat)
+            obj.active_material = new_mat
+
+        else:
+            ensure_enough_slots(obj, len(active_obj.material_slots))
+            for m_i, m in enumerate(active_obj.data.materials):
+                old_mat = obj.data.materials[m_i]
+                new_mat = m if use_ref else m.copy()
+
+                update_mmd_material_morph_ref(obj, old_mat, new_mat)
+                obj.data.materials[m_i] = new_mat
+    
     alert_msg('Info', 'Success.')
