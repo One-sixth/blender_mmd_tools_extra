@@ -92,6 +92,16 @@ Remove all MMDShaderDev.XXX and MMDTexUV.XXX and migrate to MMDShaderDev and MMD
 
 ### User Remap Material From Data To Object Dialog / 重映射材质引用从网格数据到网格对象对话框
 
+### Copy Material From Actived To Selected Object Dialog / 从激活对象复制材质到选择对象对话框
+Object Mode. Requires at least two meshes to be selected.  
+When the material is copied, the material morph of the MMD model will also be modified.  
+It is very convenient to change the material of the MMD model without worrying about the morph data being damaged.  
+
+物体模式。要求至少选中两个网格对象。  
+材质复制时，同时也会修改对应的MMD模型的材质变形。  
+这可以非常便利地更换MMD模型的材质，而不用担心变形数据被破坏。  
+
+
 ----------------------------------------------------------------------
 ## Morph Panel / 变形面板
 
