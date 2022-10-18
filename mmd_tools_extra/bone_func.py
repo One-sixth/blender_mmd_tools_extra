@@ -1,5 +1,5 @@
 import bpy
-from .misc import alert_msg, filter_mmd_rigidbody, symmetric_x_blender_name, symmetric_x_mmd_name_j, symmetric_x_vector
+from .misc import alert_msg, filter_mmd_rigidbody, find_mmd_root_obj, symmetric_x_blender_name, symmetric_x_mmd_name_j, symmetric_x_vector
 from mmd_tools.core.model import FnModel
 
 
@@ -105,11 +105,8 @@ def auto_setting_and_hide_tip_bone():
         alert_msg('Error', 'The actived object should be a valid armature object.')
         return
 
-    bones = bpy.context.selected_pose_bones
-
-    if len(bones) == 0:
-        alert_msg('Error', 'Please select at least one bone.')
-        return
+    arm_obj = bpy.context.active_object
+    bones = arm_obj.pose.bones
 
     for bone in bones:
         mbone = bone.mmd_bone
@@ -132,6 +129,57 @@ def auto_setting_and_hide_tip_bone():
                 # print(f'setting {mbone.name_j} hide to True')
                 bone.bone.hide = True
     
+    alert_msg('Info', 'Success.')
+
+
+def hide_all_uncontrollable_bone():
+    if bpy.context.mode != 'POSE':
+        alert_msg('Error', 'This function can only be used in Pose Mode.')
+        return
+    
+    if bpy.context.active_object is None or bpy.context.active_object.type != 'ARMATURE':
+        alert_msg('Error', 'The actived object should be a valid armature object.')
+        return
+
+    arm_obj = bpy.context.active_object
+    bones = arm_obj.pose.bones
+
+    for bone in bones:
+        mbone = bone.mmd_bone
+        # print(f'{mbone.name_j}')
+
+        # 检查骨骼是否为不可控制
+        if not mbone.is_controllable or bone.is_mmd_shadow_bone:
+            # 设定骨骼的隐藏属性。姿态模式不可见，编辑模式可见；同时，mmd里面，不可见。
+            if not bone.bone.hide:
+                # print(f'setting {mbone.name_j} hide to True')
+                bone.bone.hide = True
+    
+    alert_msg('Info', 'Success.')
+
+
+def hide_all_physics_bone(use_pose_mode):
+    if bpy.context.mode != 'OBJECT':
+        alert_msg('Error', 'This function can only be used in Object Mode.')
+        return
+
+    from .rigidbody_func import select_rigidbody_by_physics_type, select_bone_by_selected_rigidbody
+    select_rigidbody_by_physics_type(False, True, True)
+    select_bone_by_selected_rigidbody()
+
+    if use_pose_mode:
+        bpy.ops.object.posemode_toggle()
+        for bone in bpy.context.selected_pose_bones:
+            bone.bone.hide = True
+    else:
+        # edit mode
+        for bone in bpy.context.selected_editable_bones:
+            bone.hide = True
+    
+    root_obj = find_mmd_root_obj(bpy.context.active_object)
+    if root_obj is not None and hasattr(root_obj, 'mmd_root'):
+        root_obj.mmd_root.show_rigid_bodies = False
+
     alert_msg('Info', 'Success.')
 
 

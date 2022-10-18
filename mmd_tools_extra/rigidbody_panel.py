@@ -85,7 +85,7 @@ class OT_SelectRigidbodyByPhysicsTypeDialogOperator(Operator):
     physics:        BoolProperty(name="Physics", default=True)
 
     def execute(self, context):
-        rigidbody_func.select_rigidbody_by_physics_type_dialog(self.kinematics, self.rot_physics, self.physics)
+        rigidbody_func.select_rigidbody_by_physics_type(self.kinematics, self.rot_physics, self.physics)
         return {'FINISHED'}
 
     def invoke(self, context, event):

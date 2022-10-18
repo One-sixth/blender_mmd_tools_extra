@@ -14,6 +14,9 @@ translation_dict = {
         ('Operator', 'Clear selected bone roll'): '清除选择骨骼滚动角度',
         ('Operator', 'Symmetric selected bones X'): 'X轴镜像选中骨骼的设置',
         ('Operator', 'Auto setting and hide tip bone'): '自动设定和隐藏尖端骨骼',
+        ('Operator', 'Hide all uncontrollable bone'): '隐藏所有不可控制骨骼',
+        ('Operator', 'Hide all physics bone'): '隐藏所有物理骨骼',
+        ('*', 'Pose mode'): '姿态模式',
         ('Operator', 'Select rigidbody by selected bone'): '基于已选择的骨骼选中关联的刚体',
         ('Operator', 'Disconnect all physical bone'): '断离所有物理骨骼',
         ('Operator', 'Cancel disconnect all physical bone'): '取消断离所有物理骨骼',
@@ -86,6 +89,8 @@ translation_dict = {
         ('Operator', 'User Remap Material From Data To Object Dialog'): '重映射材质引用从网格数据到网格对象对话框',
         ('Operator', 'Copy Material From Actived To Selected Object Dialog'): '从激活对象复制材质到选择对象对话框',
         ('*', 'Only active material slot'): '仅激活材质槽',
+        ('Operator', 'Reload All Image'): '重载所有图像',
+        ('Operator', 'Remove All Redundant Image'): '移除所有冗余图像',
         
         # material_func.py
         ('*', 'Please select at least one mesh object.'): '请选中至少一个网格对象。',
@@ -190,6 +195,9 @@ translation_dict = {
         ('Operator', 'Clear selected bone roll'): '選択した骨のロールをクリア',
         ('Operator', 'Symmetric selected bones X'): '対称選択ボーン X',
         ('Operator', 'Auto setting and hide tip bone'): '先端ボーンの自動設定と非表示',
+        ('Operator', 'Hide all uncontrollable bone'): 'すべての制御できない骨を隠す',
+        ('Operator', 'Hide all physics bone'): 'すべての物理学の骨を隠す',
+        ('*', 'Pose mode'): '姿勢モード',
         ('Operator', 'Select rigidbody by selected bone'): '選択したボーンによって剛体を選択',
         ('Operator', 'Disconnect all physical bone'): 'すべての物理的な骨を切り離す',
         ('Operator', 'Cancel disconnect all physical bone'): 'すべての物理ボーンの切断をキャンセル',
@@ -262,6 +270,8 @@ translation_dict = {
         ('Operator', 'User Remap Material From Data To Object Dialog'): 'メッシュ データからメッシュ オブジェクト ダイアログへのマテリアル参照の再マップ',
         ('Operator', 'Copy Material From Actived To Selected Object Dialog'): 'アクティブオブジェクトからオブジェクトを選択するダイアログへマテリアルをコピーする',
         ('*', 'Only active material slot'): 'アクティブな材質の溝だけを使う',
+        ('Operator', 'Reload All Image'): 'すべての画像を再ロード',
+        ('Operator', 'Remove All Redundant Image'): '冗長画像をすべて除去',
         
         # material_func.py
         ('*', 'Please select at least one mesh object.'): '少なくとも 1 つのメッシュ オブジェクトを選択してください。',

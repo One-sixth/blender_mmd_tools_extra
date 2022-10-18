@@ -324,6 +324,8 @@ class MTE_Material_Panel_L2(Panel):
         layout.operator(OT_CopyMaterialFromDataToObjectDialogOperator.bl_idname)
         layout.operator(OT_UserRemapMaterialFromDataToObjectDialogOperator.bl_idname)
         layout.operator(OT_CopyMaterialFromActivedToSelectedObjectDialog.bl_idname)
+        layout.operator(OT_ReloadAllImage.bl_idname)
+        layout.operator(OT_RemoveAllRedundantImage.bl_idname)
 
 
 @_add_cls
@@ -393,6 +395,28 @@ class OT_CopyMaterialFromActivedToSelectedObjectDialog(Operator):
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
+
+
+@_add_cls
+class OT_ReloadAllImage(Operator):
+    bl_idname = 'mte.reload_all_image'
+    bl_label = 'Reload All Image'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        material_func.reload_all_image()
+        return {'FINISHED'}
+
+
+@_add_cls
+class OT_RemoveAllRedundantImage(Operator):
+    bl_idname = 'mte.remove_all_redundant_image'
+    bl_label = 'Remove All Redundant Image'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        material_func.remove_all_redundant_image()
+        return {'FINISHED'}
 
 
 # -------------------------------------------------------------------------------

@@ -342,3 +342,46 @@ def copy_material_from_active_to_select(only_active_slot, use_ref):
                 obj.data.materials[m_i] = new_mat
     
     alert_msg('Info', 'Success.')
+
+
+def reload_all_image():
+    for img in bpy.data.images:
+        if not img.is_embedded_data:
+            img.reload()
+    
+    alert_msg('Info', 'Success.')
+
+
+def remove_all_redundant_image():
+
+    def is_same_image(im1, im2):
+        b1 = im1.source == im2.source
+        b2 = im1.alpha_mode == im2.alpha_mode
+        b3 = im1.colorspace_settings.name == im2.colorspace_settings.name
+        b4 = im1.filepath == im2.filepath
+        return b1 and b2 and b3 and b4
+
+    filepath_to_unique_image_dict = {}
+
+    for img in bpy.data.images:
+        if img.is_embedded_data or\
+            img.source not in ('FILE', 'SEQUENCE', 'MOVIE') or\
+            img.filepath == '':
+            continue
+        
+        filepath = img.filepath
+
+        if filepath not in filepath_to_unique_image_dict:
+            filepath_to_unique_image_dict[filepath] = [img]
+        else:
+            same_img = None
+            for check_img in filepath_to_unique_image_dict[filepath]:
+                if is_same_image(check_img, img):
+                    same_img = check_img
+                    break
+            if same_img is not None:
+                img.user_remap(same_img)
+            else:
+                filepath_to_unique_image_dict[filepath].append(img)
+    
+    alert_msg('Info', 'Success.')

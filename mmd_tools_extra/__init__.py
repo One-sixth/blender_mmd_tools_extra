@@ -1,7 +1,7 @@
 bl_info = {
     "name": "mmd_tools_extra",
     "author": "onesixth",
-    "version": (0, 0, 4),
+    "version": (0, 0, 5),
     "blender": (3, 3, 0),
     "location": "3DView > Tools",
     "description": "Extra functionality for blender_mmd_tools.",

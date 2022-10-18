@@ -34,15 +34,25 @@ It not only includes basic Blender attributes such as bone position and posture,
 骨架编辑模式，需要选中至少一根骨骼。  
 不仅包括骨骼位置，姿态等基础Blender属性，还包括mmd_bone的名字，固定轴等mmd属性。  
 
+### Hide all uncontrollable bone / 隐藏所有不可控制骨骼
+Pose Mode.  
+
+姿态模式。  
+
+### Hide all physics bone / 隐藏所有物理骨骼
+Pose Mode.  
+
+姿态模式。  
+
 ### Auto setting and hide tip bone / 自动设定和隐藏尖端骨骼
-Pose Mode. Requires at least one bone to be selected.  
+Pose Mode.  
 Automatically hides bones that meet the following conditions:  
 1. The last character of a Japanese name is "先"  
 2. The bone has setting with is_tip  
 
-姿态模式，需要选中至少一根骨骼。  
+姿态模式  
 自动隐藏符合以下条件的骨骼：  
-1. 日文名最后一个字是 "先"
+1. 日文名最后一个字是 "先"  
 2. 已设定尖端骨骼的骨骼  
 
 ### Select rigidbody by selected bone / 基于已选择的骨骼选中关联的刚体
@@ -101,6 +111,19 @@ It is very convenient to change the material of the MMD model without worrying a
 材质复制时，同时也会修改对应的MMD模型的材质变形。  
 这可以非常便利地更换MMD模型的材质，而不用担心变形数据被破坏。  
 
+### Reload All Image / 重载所有图像
+Any mode.  
+Reload all material texture from the disk.  
+
+任意模式。  
+从硬盘重载所有材质贴图。  
+
+### Remove All Redundant Image / 移除所有冗余图像
+Any mode.  
+Example: Safely turn a.png, a.png.001, a.Png.002 all into a.png  
+
+任意模式。  
+例子：安全地把 a.png, a.png.001, a.png.002 全都变成 a.png  
 
 ----------------------------------------------------------------------
 ## Morph Panel / 变形面板

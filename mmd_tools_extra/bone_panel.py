@@ -27,6 +27,8 @@ class MTE_Bone_Panel(bpy.types.Panel):
         layout.operator(OT_ClearSelectedBoneRoll.bl_idname)
         layout.operator(OT_SymmetricSelectedBonesX.bl_idname)
         layout.operator(OT_AutoSettingAndHideTipBone.bl_idname)
+        layout.operator(OT_HideAllUncontrollableBone.bl_idname)
+        layout.operator(OT_HideAllPhysicsBone.bl_idname)
         layout.operator(OT_SelectRigidbodyBySelectedBone.bl_idname)
         layout.operator(OT_DisconnectAllPhysicalBone.bl_idname)
         layout.operator(OT_CancelDisconnectAllPhysicalBone.bl_idname)
@@ -62,6 +64,30 @@ class OT_AutoSettingAndHideTipBone(Operator):
 
     def execute(self, context):
         bone_func.auto_setting_and_hide_tip_bone()
+        return {'FINISHED'}
+
+
+@_add_cls
+class OT_HideAllUncontrollableBone(Operator):
+    bl_idname = 'mte.hide_all_uncontrollable_bone'
+    bl_label = 'Hide all uncontrollable bone'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        bone_func.hide_all_uncontrollable_bone()
+        return {'FINISHED'}
+
+
+@_add_cls
+class OT_HideAllPhysicsBone(Operator):
+    bl_idname = 'mte.hide_all_physics_bone'
+    bl_label = 'Hide all physics bone'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    use_pose_mode:    BoolProperty(name="Pose mode", default=True)
+
+    def execute(self, context):
+        bone_func.hide_all_physics_bone(use_pose_mode=self.use_pose_mode)
         return {'FINISHED'}
 
 

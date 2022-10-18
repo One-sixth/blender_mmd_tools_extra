@@ -144,7 +144,7 @@ def select_bone_by_selected_rigidbody():
     alert_msg('Info', 'Success.')
 
 
-def select_rigidbody_by_physics_type_dialog(kinematics, rot_physics, physics):
+def select_rigidbody_by_physics_type(kinematics, rot_physics, physics):
     if bpy.context.mode != 'OBJECT':
         alert_msg('Error', 'This function can only be used in Object Mode.')
         return
