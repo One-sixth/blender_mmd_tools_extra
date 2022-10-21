@@ -31,9 +31,6 @@ translation_dict = {
         ('*', 'Success. But the target bone is found to be among the selected bones, which may have unexpected results.'): '操作完成。但发现目标骨骼在选中的骨骼中，这可能产生意外的结果。',
 
         # material_panel.py
-        ('*', 'patten'): '材质名通配符',
-        ('*', 'jp_name'): '是否匹配日文名',
-        
         ('*', 'diffuse'): '漫反射色',
         ('*', 'specular'): '高光色',
         ('*', 'ambient'): '环境色',
@@ -76,8 +73,14 @@ translation_dict = {
         ('*', 'Complete all operations with one click'): '一键完成所有修改操作',
 
         ('*', 'Material Panel'): '材质面板',
+        ('Operator', 'Select Invert'): '反选',
         ('*', 'Batch alter material props.'): '批量修改材质属性',
+        ('*', 'Outdated! Please refresh the material list.'): '已过期！请刷新材质列表',
         ('Operator', 'Batch update'): '批量修改',
+        ('*', 'select_type'): '选择方法',
+        ('*', 'SELECT_ALL'): '全选',
+        ('*', 'DESELECT_ALL'): '全部弃选',
+        ('*', 'SELECT_INVERT'): '反选',
 
         ('*', 'Material Panel L2'): '材质面板2',
         ('Operator', 'Remove all redundant mmd shader group'): '删除所有冗余的MMDShader组',
@@ -212,9 +215,6 @@ translation_dict = {
         ('*', 'Success. But the target bone is found to be among the selected bones, which may have unexpected results.'): '成功。 しかし、ターゲット ボーンが選択されたボーンの中にあることがわかり、予期しない結果になる可能性があります。',
 
         # material_panel.py
-        ('*', 'patten'): '材料名のワイルドカード',
-        ('*', 'jp_name'): '和名に合わせるかどうか',
-        
         ('*', 'diffuse'): '拡散色',
         ('*', 'specular'): 'ハイライトカラー',
         ('*', 'ambient'): 'アンビエントカラー',
@@ -257,8 +257,14 @@ translation_dict = {
         ('*', 'Complete all operations with one click'): 'ワンクリックですべての変更操作を完了',
 
         ('*', 'Material Panel'): '材料パネル',
+        ('Operator', 'Select Invert'): '選択を反転',
         ('*', 'Batch alter material props.'): '材料特性のバッチ変更',
+        ('*', 'Outdated! Please refresh the material list.'): '時代遅れ材料リストを更新してください。',
         ('Operator', 'Batch update'): '一括編集',
+        ('*', 'select_type'): '選び方',
+        ('*', 'SELECT_ALL'): '全員が選ぶ',
+        ('*', 'DESELECT_ALL'): 'すべて選挙を放棄する',
+        ('*', 'SELECT_INVERT'): '逆選択',
 
         ('*', 'Material Panel L2'): '材料パネル2',
         ('Operator', 'Remove all redundant mmd shader group'): '冗長な MMDShader グループをすべて削除する',

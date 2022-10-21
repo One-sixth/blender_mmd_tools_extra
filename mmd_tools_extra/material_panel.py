@@ -1,6 +1,6 @@
 import bpy
-from bpy.types import PropertyGroup, Panel, Operator, Scene
-from bpy.props import BoolProperty, IntProperty, FloatProperty, EnumProperty, FloatVectorProperty, StringProperty, PointerProperty
+from bpy.types import PropertyGroup, Panel, Operator, Scene, UIList
+from bpy.props import BoolProperty, IntProperty, FloatProperty, EnumProperty, FloatVectorProperty, StringProperty, PointerProperty, CollectionProperty
 
 from fnmatch import fnmatch
 from . import material_func
@@ -13,10 +13,24 @@ _add_cls = _add_cls_ref(class_list)
 
 
 @_add_cls
+class MTE_Material_UL_Item_State(bpy.types.PropertyGroup):
+    is_select: BoolProperty(default=False)
+    material_name: StringProperty(default='')
+
+
+@_add_cls
+class MTE_Material_UL_Item(UIList):
+    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index, flt_flag):
+        icon = get_hide_icon(item.is_select)
+        layout.prop(item, 'is_select', icon=icon, icon_only=True)
+        layout.label(text=item.material_name, translate=False)
+
+
+@_add_cls
 class MTE_Material_Prop(PropertyGroup):
 
-    match_material_name:        StringProperty(default='*', description='')
-    match_name_j:               BoolProperty(default=False, description='')
+    selected_obj_mat_active:    IntProperty()
+    selected_obj_mat_list:      CollectionProperty(type=MTE_Material_UL_Item_State)
     # -------------------------------------------------------------------------------------
 
     use_diffuse_color:          BoolProperty(default=False, description='')
@@ -135,9 +149,23 @@ class MTE_Material_Panel(Panel):
         layout.label(text='Batch alter material props.')
         grid = layout.column(align=True)
 
-        row = grid.row(align=False)
-        row.prop(prop, 'match_material_name', text='patten')
-        row.prop(prop, 'match_name_j', text='jp_name')
+        # Check if the material list needs to be updated.
+        _A = tuple(get_ul_mat_list())
+        _B = tuple(get_selected_obj_mat_list())
+        if _A != _B:
+            row = grid.row(align=True)
+            row.label(text='Outdated! Please refresh the material list.', icon='INFO')
+        #
+
+        row = grid.row(align=True).split(factor=0.8)
+        row.template_list('MTE_Material_UL_Item', '', prop, 'selected_obj_mat_list', prop, 'selected_obj_mat_active', rows=4)
+
+        col = row.column(align=True)
+        col.operator(OT_MaterialListRefresh.bl_idname, text='Refresh', icon='FILE_REFRESH')
+        col.separator()
+        col.operator(OT_MaterialListSelect.bl_idname, text='Select All', icon='SELECT_EXTEND').select_type = 'SELECT_ALL'
+        col.operator(OT_MaterialListSelect.bl_idname, text='Deselect All', icon='SELECT_SET').select_type = 'DESELECT_ALL'
+        col.operator(OT_MaterialListSelect.bl_idname, text='Select Invert', icon='SELECT_SUBTRACT').select_type = 'SELECT_INVERT'
 
         grid.separator()
         # -----------------------------------------------------------------------------------------
@@ -290,6 +318,80 @@ class MTE_Material_Panel(Panel):
 
         layout.label(text='Complete all operations with one click')
         layout.operator(OT_BatchSettingMmdMaterialProp.bl_idname)
+
+
+def get_selected_obj_mat_list():
+    mat_list = []
+    for mesh_obj in bpy.context.selected_objects:
+        if mesh_obj.type != 'MESH':
+            continue
+        for slot in mesh_obj.material_slots:
+            if slot.material is not None and slot.material.name not in mat_list and slot.material.library is None:
+                mat_list.append(slot.material.name)
+    return mat_list
+
+
+def get_ul_mat_list():
+    scene = bpy.context.scene
+    prop = scene.mte_material_prop
+    mat_list = []
+    for item in prop.selected_obj_mat_list:
+        mat_list.append(item.material_name)
+    return mat_list
+
+
+@_add_cls
+class OT_MaterialListRefresh(Operator):
+    bl_idname = 'mte.material_list_refresh'
+    bl_label = 'Material list refresh'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        scene = context.scene
+        prop = scene.mte_material_prop
+        
+        new_mat_list = get_selected_obj_mat_list()
+                    
+        while len(prop.selected_obj_mat_list) < len(new_mat_list):
+            prop.selected_obj_mat_list.add()
+
+        need_del_ids = []
+        for i, item in enumerate(prop.selected_obj_mat_list):
+            if i < len(new_mat_list):
+                if item.material_name != new_mat_list[i]:
+                    item.material_name = new_mat_list[i]
+                    item.is_select = False
+            else:
+                need_del_ids.append(i)
+        need_del_ids = sorted(need_del_ids, reverse=True)
+        for i in need_del_ids:
+            prop.selected_obj_mat_list.remove(i)
+
+        return {'FINISHED'}
+
+
+@_add_cls
+class OT_MaterialListSelect(Operator):
+    bl_idname = 'mte.material_list_select'
+    bl_label = 'Material list select'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    select_type:   EnumProperty(
+            default='SELECT_ALL', description='Select type',
+            items=[('SELECT_ALL', 'SELECT_ALL', ''), ('DESELECT_ALL', 'DESELECT_ALL', ''), ('SELECT_INVERT', 'SELECT_INVERT', '')]
+        )
+
+    def execute(self, context):
+        scene = context.scene
+        prop = scene.mte_material_prop
+        for item in prop.selected_obj_mat_list:
+            if self.select_type == 'SELECT_ALL':
+                item.is_select = True
+            elif self.select_type == 'DESELECT_ALL':
+                item.is_select = False
+            elif self.select_type == 'SELECT_INVERT':
+                item.is_select = not item.is_select
+        return {'FINISHED'}
 
 
 @_add_cls

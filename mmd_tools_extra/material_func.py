@@ -6,33 +6,18 @@ from mmd_tools.core.material import FnMaterial
 
 
 def batch_setting_mmd_material_prop(mte_material_prop):
-    mesh_objs = [obj for obj in bpy.context.selected_objects if obj.type == 'MESH']
-
-    if len(mesh_objs) == 0:
-        alert_msg('Info', 'Please select at least one mesh object.')
-        return
-
     prop = mte_material_prop
-
     mats = []
-
-    for obj in mesh_objs:
-        for i in range(len(obj.material_slots)):
-            # 材质槽是不可修改的，必须获得真正的材质对象
-            mat = obj.material_slots[i].material
-            if mat is None:
+    for item in prop.selected_obj_mat_list:
+        if item.is_select:
+            mat_name = item.material_name
+            if mat_name not in bpy.data.materials:
                 continue
-
-            # 目标材质必须有mmd_material属性
-            if hasattr(mat, 'mmd_material') and mat.mmd_material is not None:
-                if prop.match_name_j:
-                    b = fnmatch.fnmatch(mat.mmd_material.name_j, prop.match_material_name)
-                else:
-                    b = fnmatch.fnmatch(mat.name, prop.match_material_name)
-                if b:
-                    mats.append(mat)
+            mat = bpy.data.materials[mat_name]
+            if hasattr(mat, 'mmd_material') and mat.mmd_material is not None and mat.library is None:
+                mats.append(mat)
     
-    if len(mesh_objs) == 0:
+    if len(mats) == 0:
         alert_msg('Info', 'No MMD materials were found in the selected mesh object.')
         return
 
