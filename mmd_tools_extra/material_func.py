@@ -1,6 +1,4 @@
-from unicodedata import name
 import bpy
-import fnmatch
 from .misc import alert_msg, find_mmd_root_obj
 from mmd_tools.core.material import FnMaterial
 
@@ -303,6 +301,10 @@ def copy_material_from_active_to_select(only_active_slot, use_ref):
             return
         root_obj = find_mmd_root_obj(obj)
         if root_obj is None:
+            return
+        # ignore not arm_obj child's mesh
+        is_arm_child = obj.parent.type == 'ARMATURE'
+        if not is_arm_child:
             return
         for mat_morph in root_obj.mmd_root.material_morphs:
             for mat_morph_item in mat_morph.data:
